@@ -12,11 +12,13 @@ final class User
 
     public function __construct(string $value)
     {
-        if (!Str::of($value)->matches('~^\S+$~')) {
-            throw new DomainException($value);
+        $value = Str::of($value);
+
+        if (!$value->matches('~^\S+$~') || $value->contains(':')) {
+            throw new DomainException((string) $value);
         }
 
-        $this->value = $value;
+        $this->value = (string) $value;
     }
 
     public function __toString(): string
