@@ -21,6 +21,11 @@ final class Group
         $this->value = (string) $value;
     }
 
+    public function equals(self $group): bool
+    {
+        return $this->value === $group->value;
+    }
+
     public function __toString(): string
     {
         return $this->value;

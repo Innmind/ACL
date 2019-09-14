@@ -48,4 +48,24 @@ class UserTest extends TestCase
                 $this->assertSame($string, (string) new User($string));
             });
     }
+
+    public function testEquals()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string()
+            )
+            ->when(static function($string, $other): bool {
+                return (bool) preg_match('~^\S+$~', $string) &&
+                    (bool) preg_match('~^\S+$~', $other) &&
+                    strpos($string, ':') === false &&
+                    strpos($other, ':') === false;
+            })
+            ->then(function($string, $other) {
+                $this->assertTrue((new User($string))->equals(new User($string)));
+                $this->assertFalse((new User($string))->equals(new User($other)));
+            });
+    }
 }

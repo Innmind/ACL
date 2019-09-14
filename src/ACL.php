@@ -25,6 +25,23 @@ final class ACL
         $this->otherEntries = $otherEntries;
     }
 
+    public function allows(User $user, Group $group, Mode $mode, Mode ...$modes): bool
+    {
+        if ($this->otherEntries->allows($mode, ...$modes)) {
+            return true;
+        }
+
+        if ($this->group->equals($group) && $this->groupEntries->allows($mode, ...$modes)) {
+            return true;
+        }
+
+        if ($this->user->equals($user) && $this->userEntries->allows($mode, ...$modes)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function __toString(): string
     {
         return "{$this->userEntries}{$this->groupEntries}{$this->otherEntries} {$this->user}:{$this->group}";

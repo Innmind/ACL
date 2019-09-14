@@ -14,6 +14,16 @@ final class Entries
         $this->entries = Set::of(Mode::class, ...$modes);
     }
 
+    public function allows(Mode $mode, Mode ...$modes): bool
+    {
+        return Set::of(Mode::class, $mode, ...$modes)->reduce(
+            true,
+            function(bool $allows, Mode $mode): bool {
+                return $allows && $this->entries->contains($mode);
+            }
+        );
+    }
+
     public function __toString(): string
     {
         return Mode::all()->reduce(

@@ -48,4 +48,24 @@ class GroupTest extends TestCase
                 $this->assertSame($string, (string) new Group($string));
             });
     }
+
+    public function testEquals()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string()
+            )
+            ->when(static function($string, $other): bool {
+                return (bool) preg_match('~^\S+$~', $string) &&
+                    (bool) preg_match('~^\S+$~', $other) &&
+                    strpos($string, ':') === false &&
+                    strpos($other, ':') === false;
+            })
+            ->then(function($string, $other) {
+                $this->assertTrue((new Group($string))->equals(new Group($string)));
+                $this->assertFalse((new Group($string))->equals(new Group($other)));
+            });
+    }
 }

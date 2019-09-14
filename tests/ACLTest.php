@@ -56,4 +56,172 @@ class ACLTest extends TestCase
                 );
             });
     }
+
+    public function testAllowsWhenOtherEntriesAllowsIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries,
+                    new Entries($mode)
+                );
+
+                $this->assertTrue($acl->allows(
+                    new User('baz'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testDoesNotAllowWhenOtherEntriesDoesNotAllowIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries,
+                    new Entries
+                );
+
+                $this->assertFalse($acl->allows(
+                    new User('baz'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testDoesNotAllowWhenGroupEntriesAllowsItButNotInTheSameGroup()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries($mode),
+                    new Entries
+                );
+
+                $this->assertFalse($acl->allows(
+                    new User('baz'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testDoesNotAllowWhenInGroupButGroupEntriesDoesNotAllowIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries,
+                    new Entries
+                );
+
+                $this->assertFalse($acl->allows(
+                    new User('baz'),
+                    new Group('bar'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testAllowsWhenInGroupAndGroupEntriesAllowsIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries($mode),
+                    new Entries
+                );
+
+                $this->assertTrue($acl->allows(
+                    new User('baz'),
+                    new Group('bar'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testDoesNotAllowWhenUserEntriesAllowsItButNotTheSameUser()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries($mode),
+                    new Entries,
+                    new Entries
+                );
+
+                $this->assertFalse($acl->allows(
+                    new User('baz'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testDoesNotAllowWhenSameUserButUserEntriesDoesNotAllowIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries,
+                    new Entries,
+                    new Entries
+                );
+
+                $this->assertFalse($acl->allows(
+                    new User('foo'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
+
+    public function testAllowsWhenSameUserAndUserEntriesAllowsIt()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $acl = new ACL(
+                    new User('foo'),
+                    new Group('bar'),
+                    new Entries($mode),
+                    new Entries,
+                    new Entries
+                );
+
+                $this->assertTrue($acl->allows(
+                    new User('foo'),
+                    new Group('baz'),
+                    $mode
+                ));
+            });
+    }
 }

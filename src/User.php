@@ -21,6 +21,11 @@ final class User
         $this->value = (string) $value;
     }
 
+    public function equals(self $user): bool
+    {
+        return $this->value === $user->value;
+    }
+
     public function __toString(): string
     {
         return $this->value;

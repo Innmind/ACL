@@ -8,9 +8,15 @@ use Innmind\ACL\{
     Mode,
 };
 use PHPUnit\Framework\TestCase;
+use Eris\{
+    Generator,
+    TestTrait,
+};
 
 class EntriesTest extends TestCase
 {
+    use TestTrait;
+
     /**
      * @dataProvider modes
      */
@@ -22,6 +28,51 @@ class EntriesTest extends TestCase
             $expected,
             (string) new Entries(...$modes)
         );
+    }
+
+    public function testDoNotAllowByDefault()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $this->assertFalse((new Entries)->allows($mode));
+            });
+    }
+
+    public function testAllowTheSpecifiedEntry()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $this->assertTrue((new Entries($mode))->allows($mode));
+            });
+    }
+
+    public function testDoNotAllowIfModeIsMissing()
+    {
+        $entries = new Entries(Mode::read());
+
+        $this->assertFalse($entries->allows(Mode::write()));
+        $this->assertFalse($entries->allows(Mode::execute()));
+    }
+
+    public function testDoNotAllowIfOneModeIsMissing()
+    {
+        $entries = new Entries(Mode::read());
+
+        $this->assertFalse($entries->allows(Mode::read(), Mode::write()));
+        $this->assertFalse($entries->allows(Mode::read(), Mode::execute()));
+    }
+
+    public function testAllowAsLongAsTheTestedModeIsInEntries()
+    {
+        $this
+            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->then(function($mode) {
+                $entries = new Entries(Mode::read(), Mode::write(), Mode::execute());
+
+                $this->assertTrue($entries->allows($mode));
+            });
     }
 
     public function modes(): array
