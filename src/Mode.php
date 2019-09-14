@@ -3,11 +3,17 @@ declare(strict_types = 1);
 
 namespace Innmind\ACL;
 
+use Innmind\Immutable\{
+    StreamInterface,
+    Stream,
+};
+
 final class Mode
 {
     private static $read;
     private static $write;
     private static $execute;
+    private static $all;
 
     private $value;
 
@@ -29,6 +35,16 @@ final class Mode
     public static function execute(): self
     {
         return self::$execute ?? self::$execute = new self('x');
+    }
+
+    public static function all(): StreamInterface
+    {
+        return self::$all ?? self::$all = Stream::of(
+            self::class,
+            self::read(),
+            self::write(),
+            self::execute()
+        );
     }
 
     public function __toString(): string
