@@ -57,6 +57,46 @@ class ACLTest extends TestCase
             });
     }
 
+    public function testOf()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries) {
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = ACL::of((string) $acl);
+
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    (string) $acl,
+                    (string) $acl2
+                );
+            });
+    }
+
     public function testAllowsWhenOtherEntriesAllowsIt()
     {
         $this

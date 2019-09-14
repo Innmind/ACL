@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Innmind\ACL;
 
+use Innmind\Immutable\Str;
+
 final class ACL
 {
     private $user;
@@ -23,6 +25,21 @@ final class ACL
         $this->userEntries = $userEntries;
         $this->groupEntries = $groupEntries;
         $this->otherEntries = $otherEntries;
+    }
+
+    public static function of(string $string): self
+    {
+        $string = Str::of($string);
+        [$userEntries, $groupEntries, $otherEntries] = $string->take(9)->chunk(3);
+        [$user, $group] = $string->drop(10)->split(':');
+
+        return new self(
+            new User((string) $user),
+            new Group((string) $group),
+            Entries::of((string) $userEntries),
+            Entries::of((string) $groupEntries),
+            Entries::of((string) $otherEntries)
+        );
     }
 
     public function allows(User $user, Group $group, Mode $mode, Mode ...$modes): bool

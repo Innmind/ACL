@@ -75,6 +75,17 @@ class EntriesTest extends TestCase
             });
     }
 
+    /**
+     * @dataProvider modes
+     */
+    public function testOf($_, $modes)
+    {
+        $entries = Entries::of($modes);
+
+        $this->assertInstanceOf(Entries::class, $entries);
+        $this->assertSame($modes, (string) $entries);
+    }
+
     public function modes(): array
     {
         return [

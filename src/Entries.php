@@ -3,7 +3,12 @@ declare(strict_types = 1);
 
 namespace Innmind\ACL;
 
-use Innmind\Immutable\Set;
+use Innmind\Immutable\{
+    Set,
+    SequenceInterface,
+    Sequence,
+    Str,
+};
 
 final class Entries
 {
@@ -12,6 +17,23 @@ final class Entries
     public function __construct(Mode ...$modes)
     {
         $this->entries = Set::of(Mode::class, ...$modes);
+    }
+
+    public static function of(string $modes): self
+    {
+        return new self(
+            ...Str::of($modes)
+                ->split()
+                ->reduce(
+                    new Sequence,
+                    static function(SequenceInterface $modes, Str $mode): SequenceInterface {
+                        return $modes->add(Mode::of((string) $mode));
+                    }
+                )
+                ->filter(static function(?Mode $mode): bool {
+                    return $mode instanceof Mode;
+                })
+        );
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool
