@@ -30,6 +30,17 @@ class EntriesTest extends TestCase
         );
     }
 
+    /**
+     * @dataProvider modes
+     */
+    public function testOnlyOneModePerKindIsKept($modes, $expected)
+    {
+        $this->assertSame(
+            $expected,
+            (string) new Entries(...$modes, ...$modes)
+        );
+    }
+
     public function testDoNotAllowByDefault()
     {
         $this
@@ -84,6 +95,54 @@ class EntriesTest extends TestCase
 
         $this->assertInstanceOf(Entries::class, $entries);
         $this->assertSame($modes, (string) $entries);
+    }
+
+    public function testAddMode()
+    {
+        $this
+            ->forAll(
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->then(function($initial, $toAdd) {
+                $entries = new Entries(...$initial);
+                $entries2 = $entries->add(...$toAdd);
+
+                $this->assertInstanceOf(Entries::class, $entries2);
+                $this->assertNotSame($entries, $entries2);
+                $this->assertSame(
+                    (string) new Entries(...$initial),
+                    (string) $entries
+                );
+                $this->assertSame(
+                    (string) new Entries(...$initial, ...$toAdd),
+                    (string) $entries2
+                );
+            });
+    }
+
+    public function testRemove()
+    {
+        $this
+            ->forAll(
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->then(function($initial, $toRemove) {
+                $entries = new Entries(...$initial);
+                $entries2 = $entries->remove(...$toRemove);
+
+                $this->assertInstanceOf(Entries::class, $entries2);
+                $this->assertNotSame($entries, $entries2);
+                $this->assertSame(
+                    (string) new Entries(...$initial),
+                    (string) $entries
+                );
+                $this->assertSame(
+                    (string) new Entries(...array_diff($initial, $toRemove)),
+                    (string) $entries2
+                );
+            });
     }
 
     public function modes(): array
