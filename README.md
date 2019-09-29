@@ -39,6 +39,10 @@ $acl->allows(new User('user'), new Group('group'), Mode::read()); // true
 $acl->allows(new User('user'), new Group('group'), Mode::write()); // true
 $acl->allows(new User('user'), new Group('group'), Mode::execute()); // true
 (string) $acl; // outputs "r---w---x user:group"
+
+$otherAcl = $acl->addUser(Mode::write());
+(string) $acl; // outputs "r---w---x user:group"
+(string) $otherAcl; // outputs "rw--w---x user:group"
 ```
 
 The goal is to reproduce the logic of the filesystem ACL but at the application level so it can be persisted in a user entity and being completely decoupled from the real filesystem.
