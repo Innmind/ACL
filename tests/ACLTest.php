@@ -264,4 +264,286 @@ class ACLTest extends TestCase
                 ));
             });
     }
+
+    public function testAddModeToUser()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
+                $expectedUser = new Entries(...$userEntries, ...$toAdd);
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->addUser(...$toAdd);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$expectedUser$groupEntries$otherEntries $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
+
+    public function testAddModeToGroup()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
+                $expectedGroup = new Entries(...$groupEntries, ...$toAdd);
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->addGroup(...$toAdd);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$userEntries$expectedGroup$otherEntries $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
+
+    public function testAddModeToOther()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
+                $expectedOther = new Entries(...$otherEntries, ...$toAdd);
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->addOther(...$toAdd);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$userEntries$groupEntries$expectedOther $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
+
+    public function testRemoveModeFromUser()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
+                $expectedUser = new Entries(...array_diff($userEntries, $toRemove));
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->removeUser(...$toRemove);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$expectedUser$groupEntries$otherEntries $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
+
+    public function testRemoveModeFromGroup()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
+                $expectedGroup = new Entries(...array_diff($groupEntries, $toRemove));
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->removeGroup(...$toRemove);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$userEntries$expectedGroup$otherEntries $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
+
+    public function testRemoveModeFromOther()
+    {
+        $this
+            ->minimumEvaluationRatio(0.3)
+            ->forAll(
+                Generator\string(),
+                Generator\string(),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
+                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            )
+            ->when(static function($user, $group): bool {
+                return (bool) preg_match('~^\S+$~', $user) &&
+                    (bool) preg_match('~^\S+$~', $group) &&
+                    strpos($user, ':') === false &&
+                    strpos($group, ':') === false;
+            })
+            ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
+                $expectedOther = new Entries(...array_diff($otherEntries, $toRemove));
+                $userEntries = new Entries(...$userEntries);
+                $groupEntries = new Entries(...$groupEntries);
+                $otherEntries = new Entries(...$otherEntries);
+
+                $acl = new ACL(
+                    new User($user),
+                    new Group($group),
+                    $userEntries,
+                    $groupEntries,
+                    $otherEntries
+                );
+
+                $acl2 = $acl->removeOther(...$toRemove);
+
+                $this->assertInstanceOf(ACL::class, $acl2);
+                $this->assertNotSame($acl, $acl2);
+                $this->assertSame(
+                    "$userEntries$groupEntries$otherEntries $user:$group",
+                    (string) $acl
+                );
+                $this->assertSame(
+                    "$userEntries$groupEntries$expectedOther $user:$group",
+                    (string) $acl2
+                );
+            });
+    }
 }

@@ -42,6 +42,72 @@ final class ACL
         );
     }
 
+    public function addUser(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries->add(...$modes),
+            $this->groupEntries,
+            $this->otherEntries
+        );
+    }
+
+    public function addGroup(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries,
+            $this->groupEntries->add(...$modes),
+            $this->otherEntries
+        );
+    }
+
+    public function addOther(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries,
+            $this->groupEntries,
+            $this->otherEntries->add(...$modes)
+        );
+    }
+
+    public function removeUser(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries->remove(...$modes),
+            $this->groupEntries,
+            $this->otherEntries
+        );
+    }
+
+    public function removeGroup(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries,
+            $this->groupEntries->remove(...$modes),
+            $this->otherEntries
+        );
+    }
+
+    public function removeOther(Mode ...$modes): self
+    {
+        return new self(
+            $this->user,
+            $this->group,
+            $this->userEntries,
+            $this->groupEntries,
+            $this->otherEntries->remove(...$modes)
+        );
+    }
+
     public function allows(User $user, Group $group, Mode $mode, Mode ...$modes): bool
     {
         if ($this->otherEntries->allows($mode, ...$modes)) {
