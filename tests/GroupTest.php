@@ -61,7 +61,8 @@ class GroupTest extends TestCase
                 return (bool) preg_match('~^\S+$~', $string) &&
                     (bool) preg_match('~^\S+$~', $other) &&
                     strpos($string, ':') === false &&
-                    strpos($other, ':') === false;
+                    strpos($other, ':') === false &&
+                    $string !== $other;
             })
             ->then(function($string, $other) {
                 $this->assertTrue((new Group($string))->equals(new Group($string)));
