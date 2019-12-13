@@ -7,7 +7,8 @@ use Innmind\ACL\{
     Mode,
     Exception\DomainException,
 };
-use Innmind\Immutable\StreamInterface;
+use Innmind\Immutable\Sequence;
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 use Eris\{
     Generator,
@@ -44,10 +45,10 @@ class ModeTest extends TestCase
 
     public function testAll()
     {
-        $this->assertInstanceOf(StreamInterface::class, Mode::all());
+        $this->assertInstanceOf(Sequence::class, Mode::all());
         $this->assertSame(Mode::class, (string) Mode::all()->type());
         $this->assertSame(Mode::all(), Mode::all());
-        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], Mode::all()->toPrimitive());
+        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], unwrap(Mode::all()));
     }
 
     public function testOfNull()

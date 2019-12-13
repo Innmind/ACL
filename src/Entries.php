@@ -5,10 +5,10 @@ namespace Innmind\ACL;
 
 use Innmind\Immutable\{
     Set,
-    SequenceInterface,
     Sequence,
     Str,
 };
+use function Innmind\Immutable\unwrap;
 
 final class Entries
 {
@@ -21,35 +21,34 @@ final class Entries
 
     public static function of(string $modes): self
     {
-        return new self(
-            ...Str::of($modes)
-                ->split()
-                ->reduce(
-                    new Sequence,
-                    static function(SequenceInterface $modes, Str $mode): SequenceInterface {
-                        return $modes->add(Mode::of((string) $mode));
-                    }
-                )
-                ->filter(static function(?Mode $mode): bool {
-                    return $mode instanceof Mode;
-                })
-        );
+        $modes = Str::of($modes)
+            ->split()
+            ->reduce(
+                Sequence::of('?'.Mode::class),
+                static function(Sequence $modes, Str $mode): Sequence {
+                    return $modes->add(Mode::of($mode->toString()));
+                }
+            )
+            ->filter(static function(?Mode $mode): bool {
+                return $mode instanceof Mode;
+            });
+
+        return new self(...unwrap($modes));
     }
 
     public function add(Mode ...$modes): self
     {
-        return new self(...$this->entries, ...$modes);
+        return new self(...unwrap($this->entries), ...$modes);
     }
 
     public function remove(Mode ...$modes): self
     {
         $toRemove = Set::of(Mode::class, ...$modes);
+        $entries = $this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
+            return !$toRemove->contains($entry);
+        });
 
-        return new self(
-            ...$this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
-                return !$toRemove->contains($entry);
-            })
-        );
+        return new self(...unwrap($entries));
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool

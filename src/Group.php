@@ -15,10 +15,10 @@ final class Group
         $value = Str::of($value);
 
         if (!$value->matches('~^\S+$~') || $value->contains(':')) {
-            throw new DomainException((string) $value);
+            throw new DomainException($value->toString());
         }
 
-        $this->value = (string) $value;
+        $this->value = $value->toString();
     }
 
     public function equals(self $group): bool
