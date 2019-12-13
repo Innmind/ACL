@@ -60,7 +60,7 @@ final class Mode
             self::class,
             self::read(),
             self::write(),
-            self::execute()
+            self::execute(),
         );
     }
 

@@ -39,7 +39,7 @@ final class ACL
             new Group($group->toString()),
             Entries::of($userEntries->toString()),
             Entries::of($groupEntries->toString()),
-            Entries::of($otherEntries->toString())
+            Entries::of($otherEntries->toString()),
         );
     }
 
@@ -50,7 +50,7 @@ final class ACL
             $this->group,
             $this->userEntries->add(...$modes),
             $this->groupEntries,
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -61,7 +61,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries->add(...$modes),
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -72,7 +72,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries,
-            $this->otherEntries->add(...$modes)
+            $this->otherEntries->add(...$modes),
         );
     }
 
@@ -83,7 +83,7 @@ final class ACL
             $this->group,
             $this->userEntries->remove(...$modes),
             $this->groupEntries,
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -94,7 +94,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries->remove(...$modes),
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -105,7 +105,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries,
-            $this->otherEntries->remove(...$modes)
+            $this->otherEntries->remove(...$modes),
         );
     }
 

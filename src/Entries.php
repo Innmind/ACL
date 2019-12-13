@@ -60,7 +60,7 @@ final class Entries
             true,
             function(bool $allows, Mode $mode): bool {
                 return $allows && $this->entries->contains($mode);
-            }
+            },
         );
     }
 
@@ -70,7 +70,7 @@ final class Entries
             '',
             function(string $entries, Mode $mode): string {
                 return $entries.($this->entries->contains($mode) ? $mode->toString() : '-');
-            }
+            },
         );
     }
 }
