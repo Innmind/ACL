@@ -51,8 +51,8 @@ class ACLTest extends TestCase
                 );
 
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
             });
     }
@@ -87,12 +87,12 @@ class ACLTest extends TestCase
                     $otherEntries
                 );
 
-                $acl2 = ACL::of((string) $acl);
+                $acl2 = ACL::of($acl->toString());
 
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    (string) $acl,
-                    (string) $acl2
+                    $acl->toString(),
+                    $acl2->toString()
                 );
             });
     }
@@ -302,12 +302,12 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$expectedUser$groupEntries$otherEntries $user:$group",
-                    (string) $acl2
+                    $this->format($expectedUser, $groupEntries, $otherEntries, $user, $group),
+                    $acl2->toString()
                 );
             });
     }
@@ -349,12 +349,12 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$userEntries$expectedGroup$otherEntries $user:$group",
-                    (string) $acl2
+                    $this->format($userEntries, $expectedGroup, $otherEntries, $user, $group),
+                    $acl2->toString()
                 );
             });
     }
@@ -396,12 +396,12 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$userEntries$groupEntries$expectedOther $user:$group",
-                    (string) $acl2
+                    $this->format($userEntries, $groupEntries, $expectedOther, $user, $group),
+                    $acl2->toString()
                 );
             });
     }
@@ -425,7 +425,7 @@ class ACLTest extends TestCase
                     strpos($group, ':') === false;
             })
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedUser = new Entries(...array_diff($userEntries, $toRemove));
+                $expectedUser = new Entries(...$this->diff($userEntries, $toRemove));
                 $userEntries = new Entries(...$userEntries);
                 $groupEntries = new Entries(...$groupEntries);
                 $otherEntries = new Entries(...$otherEntries);
@@ -443,12 +443,12 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$expectedUser$groupEntries$otherEntries $user:$group",
-                    (string) $acl2
+                    $this->format($expectedUser, $groupEntries, $otherEntries, $user, $group),
+                    $acl2->toString()
                 );
             });
     }
@@ -472,7 +472,7 @@ class ACLTest extends TestCase
                     strpos($group, ':') === false;
             })
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedGroup = new Entries(...array_diff($groupEntries, $toRemove));
+                $expectedGroup = new Entries(...$this->diff($groupEntries, $toRemove));
                 $userEntries = new Entries(...$userEntries);
                 $groupEntries = new Entries(...$groupEntries);
                 $otherEntries = new Entries(...$otherEntries);
@@ -490,12 +490,12 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$userEntries$expectedGroup$otherEntries $user:$group",
-                    (string) $acl2
+                    $this->format($userEntries, $expectedGroup, $otherEntries, $user, $group),
+                    $acl2->toString()
                 );
             });
     }
@@ -519,7 +519,7 @@ class ACLTest extends TestCase
                     strpos($group, ':') === false;
             })
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedOther = new Entries(...array_diff($otherEntries, $toRemove));
+                $expectedOther = new Entries(...$this->diff($otherEntries, $toRemove));
                 $userEntries = new Entries(...$userEntries);
                 $groupEntries = new Entries(...$groupEntries);
                 $otherEntries = new Entries(...$otherEntries);
@@ -537,13 +537,39 @@ class ACLTest extends TestCase
                 $this->assertInstanceOf(ACL::class, $acl2);
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
-                    "$userEntries$groupEntries$otherEntries $user:$group",
-                    (string) $acl
+                    $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
+                    $acl->toString()
                 );
                 $this->assertSame(
-                    "$userEntries$groupEntries$expectedOther $user:$group",
-                    (string) $acl2
+                    $this->format($userEntries, $groupEntries, $expectedOther, $user, $group),
+                    $acl2->toString()
                 );
             });
+    }
+
+    private function format(
+        Entries $userEntries,
+        Entries $groupEntries,
+        Entries $otherEntries,
+        string $user,
+        string $group
+    ): string
+    {
+        return \sprintf(
+            '%s%s%s %s:%s',
+            $userEntries->toString(),
+            $groupEntries->toString(),
+            $otherEntries->toString(),
+            $user,
+            $group,
+        );
+    }
+
+    private function diff(array $entries, array $toRemove): array
+    {
+        return array_filter(
+            $entries,
+            fn($entry) => !in_array($entry, $toRemove, true),
+        );
     }
 }

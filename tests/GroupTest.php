@@ -45,7 +45,7 @@ class GroupTest extends TestCase
                 return (bool) preg_match('~^\S+$~', $string) && strpos($string, ':') === false;
             })
             ->then(function($string) {
-                $this->assertSame($string, (string) new Group($string));
+                $this->assertSame($string, (new Group($string))->toString());
             });
     }
 

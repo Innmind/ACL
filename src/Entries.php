@@ -61,12 +61,12 @@ final class Entries
         );
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return Mode::all()->reduce(
             '',
             function(string $entries, Mode $mode): string {
-                return $entries.($this->entries->contains($mode) ? (string) $mode : '-');
+                return $entries.($this->entries->contains($mode) ? $mode->toString() : '-');
             }
         );
     }

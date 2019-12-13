@@ -26,7 +26,7 @@ final class User
         return $this->value === $user->value;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

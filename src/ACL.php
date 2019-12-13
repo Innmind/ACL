@@ -126,8 +126,15 @@ final class ACL
         return false;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
-        return "{$this->userEntries}{$this->groupEntries}{$this->otherEntries} {$this->user}:{$this->group}";
+        return \sprintf(
+            '%s%s%s %s:%s',
+            $this->userEntries->toString(),
+            $this->groupEntries->toString(),
+            $this->otherEntries->toString(),
+            $this->user->toString(),
+            $this->group->toString(),
+        );
     }
 }
