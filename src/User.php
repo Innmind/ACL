@@ -8,17 +8,17 @@ use Innmind\Immutable\Str;
 
 final class User
 {
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {
         $value = Str::of($value);
 
         if (!$value->matches('~^\S+$~') || $value->contains(':')) {
-            throw new DomainException((string) $value);
+            throw new DomainException($value->toString());
         }
 
-        $this->value = (string) $value;
+        $this->value = $value->toString();
     }
 
     public function equals(self $user): bool
@@ -26,7 +26,7 @@ final class User
         return $this->value === $user->value;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

@@ -4,17 +4,14 @@ declare(strict_types = 1);
 namespace Innmind\ACL;
 
 use Innmind\ACL\Exception\DomainException;
-use Innmind\Immutable\{
-    StreamInterface,
-    Stream,
-};
+use Innmind\Immutable\Sequence;
 
 final class Mode
 {
-    private static $read;
-    private static $write;
-    private static $execute;
-    private static $all;
+    private static ?self $read = null;
+    private static ?self $write = null;
+    private static ?self $execute = null;
+    private static ?Sequence $all = null;
 
     private $value;
 
@@ -57,17 +54,17 @@ final class Mode
         return self::$execute ?? self::$execute = new self('x');
     }
 
-    public static function all(): StreamInterface
+    public static function all(): Sequence
     {
-        return self::$all ?? self::$all = Stream::of(
+        return self::$all ?? self::$all = Sequence::of(
             self::class,
             self::read(),
             self::write(),
-            self::execute()
+            self::execute(),
         );
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->value;
     }

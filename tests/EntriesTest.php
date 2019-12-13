@@ -26,7 +26,7 @@ class EntriesTest extends TestCase
 
         $this->assertSame(
             $expected,
-            (string) new Entries(...$modes)
+            (new Entries(...$modes))->toString()
         );
     }
 
@@ -37,7 +37,7 @@ class EntriesTest extends TestCase
     {
         $this->assertSame(
             $expected,
-            (string) new Entries(...$modes, ...$modes)
+            (new Entries(...$modes, ...$modes))->toString()
         );
     }
 
@@ -94,7 +94,7 @@ class EntriesTest extends TestCase
         $entries = Entries::of($modes);
 
         $this->assertInstanceOf(Entries::class, $entries);
-        $this->assertSame($modes, (string) $entries);
+        $this->assertSame($modes, $entries->toString());
     }
 
     public function testAddMode()
@@ -111,12 +111,12 @@ class EntriesTest extends TestCase
                 $this->assertInstanceOf(Entries::class, $entries2);
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
-                    (string) new Entries(...$initial),
-                    (string) $entries
+                    (new Entries(...$initial))->toString(),
+                    $entries->toString()
                 );
                 $this->assertSame(
-                    (string) new Entries(...$initial, ...$toAdd),
-                    (string) $entries2
+                    (new Entries(...$initial, ...$toAdd))->toString(),
+                    $entries2->toString()
                 );
             });
     }
@@ -135,12 +135,12 @@ class EntriesTest extends TestCase
                 $this->assertInstanceOf(Entries::class, $entries2);
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
-                    (string) new Entries(...$initial),
-                    (string) $entries
+                    (new Entries(...$initial))->toString(),
+                    $entries->toString()
                 );
                 $this->assertSame(
-                    (string) new Entries(...array_diff($initial, $toRemove)),
-                    (string) $entries2
+                    (new Entries(...$this->diff($initial, $toRemove)))->toString(),
+                    $entries2->toString()
                 );
             });
     }
@@ -181,5 +181,13 @@ class EntriesTest extends TestCase
                 '-w-',
             ],
         ];
+    }
+
+    private function diff(array $modes, array $toRemove): array
+    {
+        return array_filter(
+            $modes,
+            fn($mode) => !in_array($mode, $toRemove, true),
+        );
     }
 }

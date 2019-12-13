@@ -7,7 +7,8 @@ use Innmind\ACL\{
     Mode,
     Exception\DomainException,
 };
-use Innmind\Immutable\StreamInterface;
+use Innmind\Immutable\Sequence;
+use function Innmind\Immutable\unwrap;
 use PHPUnit\Framework\TestCase;
 use Eris\{
     Generator,
@@ -22,7 +23,7 @@ class ModeTest extends TestCase
     {
         $this->assertInstanceOf(Mode::class, Mode::read());
         $this->assertSame(Mode::read(), Mode::read());
-        $this->assertSame('r', (string) Mode::read());
+        $this->assertSame('r', Mode::read()->toString());
         $this->assertSame(Mode::read(), Mode::of('r'));
     }
 
@@ -30,7 +31,7 @@ class ModeTest extends TestCase
     {
         $this->assertInstanceOf(Mode::class, Mode::write());
         $this->assertSame(Mode::write(), Mode::write());
-        $this->assertSame('w', (string) Mode::write());
+        $this->assertSame('w', Mode::write()->toString());
         $this->assertSame(Mode::write(), Mode::of('w'));
     }
 
@@ -38,16 +39,16 @@ class ModeTest extends TestCase
     {
         $this->assertInstanceOf(Mode::class, Mode::execute());
         $this->assertSame(Mode::execute(), Mode::execute());
-        $this->assertSame('x', (string) Mode::execute());
+        $this->assertSame('x', Mode::execute()->toString());
         $this->assertSame(Mode::execute(), Mode::of('x'));
     }
 
     public function testAll()
     {
-        $this->assertInstanceOf(StreamInterface::class, Mode::all());
-        $this->assertSame(Mode::class, (string) Mode::all()->type());
+        $this->assertInstanceOf(Sequence::class, Mode::all());
+        $this->assertSame(Mode::class, Mode::all()->type());
         $this->assertSame(Mode::all(), Mode::all());
-        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], Mode::all()->toPrimitive());
+        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], unwrap(Mode::all()));
     }
 
     public function testOfNull()

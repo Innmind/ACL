@@ -5,51 +5,53 @@ namespace Innmind\ACL;
 
 use Innmind\Immutable\{
     Set,
-    SequenceInterface,
     Sequence,
     Str,
 };
+use function Innmind\Immutable\unwrap;
 
 final class Entries
 {
-    private $entries;
+    /** @var Set<Mode> */
+    private Set $entries;
 
     public function __construct(Mode ...$modes)
     {
+        /** @var Set<Mode> */
         $this->entries = Set::of(Mode::class, ...$modes);
     }
 
     public static function of(string $modes): self
     {
-        return new self(
-            ...Str::of($modes)
-                ->split()
-                ->reduce(
-                    new Sequence,
-                    static function(SequenceInterface $modes, Str $mode): SequenceInterface {
-                        return $modes->add(Mode::of((string) $mode));
-                    }
-                )
-                ->filter(static function(?Mode $mode): bool {
-                    return $mode instanceof Mode;
-                })
-        );
+        /** @var Sequence<Mode> */
+        $modes = Str::of($modes)
+            ->split()
+            ->reduce(
+                Sequence::of('?'.Mode::class),
+                static function(Sequence $modes, Str $mode): Sequence {
+                    return $modes->add(Mode::of($mode->toString()));
+                }
+            )
+            ->filter(static function(?Mode $mode): bool {
+                return $mode instanceof Mode;
+            });
+
+        return new self(...unwrap($modes));
     }
 
     public function add(Mode ...$modes): self
     {
-        return new self(...$this->entries, ...$modes);
+        return new self(...unwrap($this->entries), ...$modes);
     }
 
     public function remove(Mode ...$modes): self
     {
         $toRemove = Set::of(Mode::class, ...$modes);
+        $entries = $this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
+            return !$toRemove->contains($entry);
+        });
 
-        return new self(
-            ...$this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
-                return !$toRemove->contains($entry);
-            })
-        );
+        return new self(...unwrap($entries));
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool
@@ -58,17 +60,17 @@ final class Entries
             true,
             function(bool $allows, Mode $mode): bool {
                 return $allows && $this->entries->contains($mode);
-            }
+            },
         );
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return Mode::all()->reduce(
             '',
             function(string $entries, Mode $mode): string {
-                return $entries.($this->entries->contains($mode) ? (string) $mode : '-');
-            }
+                return $entries.($this->entries->contains($mode) ? $mode->toString() : '-');
+            },
         );
     }
 }

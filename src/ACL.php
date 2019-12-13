@@ -4,14 +4,15 @@ declare(strict_types = 1);
 namespace Innmind\ACL;
 
 use Innmind\Immutable\Str;
+use function Innmind\Immutable\unwrap;
 
 final class ACL
 {
-    private $user;
-    private $group;
-    private $userEntries;
-    private $groupEntries;
-    private $otherEntries;
+    private User $user;
+    private Group $group;
+    private Entries $userEntries;
+    private Entries $groupEntries;
+    private Entries $otherEntries;
 
     public function __construct(
         User $user,
@@ -30,15 +31,15 @@ final class ACL
     public static function of(string $string): self
     {
         $string = Str::of($string);
-        [$userEntries, $groupEntries, $otherEntries] = $string->take(9)->chunk(3);
-        [$user, $group] = $string->drop(10)->split(':');
+        [$userEntries, $groupEntries, $otherEntries] = unwrap($string->take(9)->chunk(3));
+        [$user, $group] = unwrap($string->drop(10)->split(':'));
 
         return new self(
-            new User((string) $user),
-            new Group((string) $group),
-            Entries::of((string) $userEntries),
-            Entries::of((string) $groupEntries),
-            Entries::of((string) $otherEntries)
+            new User($user->toString()),
+            new Group($group->toString()),
+            Entries::of($userEntries->toString()),
+            Entries::of($groupEntries->toString()),
+            Entries::of($otherEntries->toString()),
         );
     }
 
@@ -49,7 +50,7 @@ final class ACL
             $this->group,
             $this->userEntries->add(...$modes),
             $this->groupEntries,
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -60,7 +61,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries->add(...$modes),
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -71,7 +72,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries,
-            $this->otherEntries->add(...$modes)
+            $this->otherEntries->add(...$modes),
         );
     }
 
@@ -82,7 +83,7 @@ final class ACL
             $this->group,
             $this->userEntries->remove(...$modes),
             $this->groupEntries,
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -93,7 +94,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries->remove(...$modes),
-            $this->otherEntries
+            $this->otherEntries,
         );
     }
 
@@ -104,7 +105,7 @@ final class ACL
             $this->group,
             $this->userEntries,
             $this->groupEntries,
-            $this->otherEntries->remove(...$modes)
+            $this->otherEntries->remove(...$modes),
         );
     }
 
@@ -125,8 +126,15 @@ final class ACL
         return false;
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
-        return "{$this->userEntries}{$this->groupEntries}{$this->otherEntries} {$this->user}:{$this->group}";
+        return \sprintf(
+            '%s%s%s %s:%s',
+            $this->userEntries->toString(),
+            $this->groupEntries->toString(),
+            $this->otherEntries->toString(),
+            $this->user->toString(),
+            $this->group->toString(),
+        );
     }
 }
