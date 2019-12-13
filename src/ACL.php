@@ -8,11 +8,11 @@ use function Innmind\Immutable\unwrap;
 
 final class ACL
 {
-    private $user;
-    private $group;
-    private $userEntries;
-    private $groupEntries;
-    private $otherEntries;
+    private User $user;
+    private Group $group;
+    private Entries $userEntries;
+    private Entries $groupEntries;
+    private Entries $otherEntries;
 
     public function __construct(
         User $user,

@@ -12,7 +12,7 @@ use function Innmind\Immutable\unwrap;
 
 final class Entries
 {
-    private $entries;
+    private Set $entries;
 
     public function __construct(Mode ...$modes)
     {

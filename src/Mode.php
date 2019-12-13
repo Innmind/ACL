@@ -8,10 +8,10 @@ use Innmind\Immutable\Sequence;
 
 final class Mode
 {
-    private static $read;
-    private static $write;
-    private static $execute;
-    private static $all;
+    private static self $read;
+    private static self $write;
+    private static self $execute;
+    private static ?Sequence $all = null;
 
     private $value;
 
