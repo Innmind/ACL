@@ -12,15 +12,18 @@ use function Innmind\Immutable\unwrap;
 
 final class Entries
 {
+    /** @var Set<Mode> */
     private Set $entries;
 
     public function __construct(Mode ...$modes)
     {
+        /** @var Set<Mode> */
         $this->entries = Set::of(Mode::class, ...$modes);
     }
 
     public static function of(string $modes): self
     {
+        /** @var Sequence<Mode> */
         $modes = Str::of($modes)
             ->split()
             ->reduce(
