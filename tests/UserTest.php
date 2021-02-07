@@ -7,20 +7,14 @@ use Innmind\ACL\{
     User,
     Exception\DomainException,
 };
-use PHPUnit\Framework\TestCase;
-use Eris\{
-    Generator,
-    TestTrait,
-};
+use Innmind\BlackBox\Set;
 
 class UserTest extends TestCase
 {
-    use TestTrait;
-
     public function testThrowContainsAWhitespaceOrIsEmpty()
     {
         $this
-            ->forAll(Generator\elements('', ' ', 'f o'))
+            ->forAll(Set\Elements::of('', ' ', 'f o'))
             ->then(function($invalid) {
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
@@ -40,10 +34,7 @@ class UserTest extends TestCase
     public function testAcceptsAnyStringWithoutAWhitespace()
     {
         $this
-            ->forAll(Generator\string())
-            ->when(static function($string): bool {
-                return (bool) preg_match('~^\S+$~', $string) && strpos($string, ':') === false;
-            })
+            ->forAll($this->user())
             ->then(function($string) {
                 $this->assertSame($string, (new User($string))->toString());
             });
@@ -52,16 +43,12 @@ class UserTest extends TestCase
     public function testEquals()
     {
         $this
-            ->minimumEvaluationRatio(0.3)
             ->forAll(
-                Generator\string(),
-                Generator\string()
+                $this->user(),
+                $this->user(),
             )
-            ->when(static function($string, $other): bool {
-                return (bool) preg_match('~^\S+$~', $string) &&
-                    (bool) preg_match('~^\S+$~', $other) &&
-                    strpos($string, ':') === false &&
-                    strpos($other, ':') === false;
+            ->filter(static function($string, $other): bool {
+                return $string !== $other;
             })
             ->then(function($string, $other) {
                 $this->assertTrue((new User($string))->equals(new User($string)));

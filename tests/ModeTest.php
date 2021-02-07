@@ -9,16 +9,10 @@ use Innmind\ACL\{
 };
 use Innmind\Immutable\Sequence;
 use function Innmind\Immutable\unwrap;
-use PHPUnit\Framework\TestCase;
-use Eris\{
-    Generator,
-    TestTrait,
-};
+use Innmind\BlackBox\Set;
 
 class ModeTest extends TestCase
 {
-    use TestTrait;
-
     public function testRead()
     {
         $this->assertInstanceOf(Mode::class, Mode::read());
@@ -59,10 +53,11 @@ class ModeTest extends TestCase
     public function testThrowWhenBuildingModeFromUnknownString()
     {
         $this
-            ->forAll(Generator\string())
-            ->when(static function($string): bool {
-                return !in_array($string, ['r', 'w', 'x', '-'], true);
-            })
+            ->forAll(
+                Set\Strings::any()->filter(static function($string): bool {
+                    return !\in_array($string, ['r', 'w', 'x', '-'], true);
+                })
+            )
             ->then(function($string) {
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($string);

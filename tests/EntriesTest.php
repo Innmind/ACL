@@ -7,22 +7,15 @@ use Innmind\ACL\{
     Entries,
     Mode,
 };
-use PHPUnit\Framework\TestCase;
-use Eris\{
-    Generator,
-    TestTrait,
-};
 
 class EntriesTest extends TestCase
 {
-    use TestTrait;
-
     /**
-     * @dataProvider modes
+     * @dataProvider modesProvider
      */
     public function testStringCast($modes, $expected)
     {
-        shuffle($modes);
+        \shuffle($modes);
 
         $this->assertSame(
             $expected,
@@ -31,7 +24,7 @@ class EntriesTest extends TestCase
     }
 
     /**
-     * @dataProvider modes
+     * @dataProvider modesProvider
      */
     public function testOnlyOneModePerKindIsKept($modes, $expected)
     {
@@ -44,7 +37,7 @@ class EntriesTest extends TestCase
     public function testDoNotAllowByDefault()
     {
         $this
-            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->forAll($this->mode())
             ->then(function($mode) {
                 $this->assertFalse((new Entries)->allows($mode));
             });
@@ -53,7 +46,7 @@ class EntriesTest extends TestCase
     public function testAllowTheSpecifiedEntry()
     {
         $this
-            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->forAll($this->mode())
             ->then(function($mode) {
                 $this->assertTrue((new Entries($mode))->allows($mode));
             });
@@ -78,7 +71,7 @@ class EntriesTest extends TestCase
     public function testAllowAsLongAsTheTestedModeIsInEntries()
     {
         $this
-            ->forAll(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+            ->forAll($this->mode())
             ->then(function($mode) {
                 $entries = new Entries(Mode::read(), Mode::write(), Mode::execute());
 
@@ -87,7 +80,7 @@ class EntriesTest extends TestCase
     }
 
     /**
-     * @dataProvider modes
+     * @dataProvider modesProvider
      */
     public function testOf($_, $modes)
     {
@@ -101,8 +94,8 @@ class EntriesTest extends TestCase
     {
         $this
             ->forAll(
-                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
-                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+                $this->modes(),
+                $this->modes()
             )
             ->then(function($initial, $toAdd) {
                 $entries = new Entries(...$initial);
@@ -125,8 +118,8 @@ class EntriesTest extends TestCase
     {
         $this
             ->forAll(
-                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute())),
-                Generator\seq(Generator\elements(Mode::read(), Mode::write(), Mode::execute()))
+                $this->modes(),
+                $this->modes()
             )
             ->then(function($initial, $toRemove) {
                 $entries = new Entries(...$initial);
@@ -145,7 +138,7 @@ class EntriesTest extends TestCase
             });
     }
 
-    public function modes(): array
+    public function modesProvider(): array
     {
         return [
             [
@@ -185,9 +178,9 @@ class EntriesTest extends TestCase
 
     private function diff(array $modes, array $toRemove): array
     {
-        return array_filter(
+        return \array_filter(
             $modes,
-            fn($mode) => !in_array($mode, $toRemove, true),
+            static fn($mode) => !\in_array($mode, $toRemove, true),
         );
     }
 }
