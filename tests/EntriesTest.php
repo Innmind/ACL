@@ -15,7 +15,7 @@ class EntriesTest extends TestCase
      */
     public function testStringCast($modes, $expected)
     {
-        shuffle($modes);
+        \shuffle($modes);
 
         $this->assertSame(
             $expected,
@@ -178,9 +178,9 @@ class EntriesTest extends TestCase
 
     private function diff(array $modes, array $toRemove): array
     {
-        return array_filter(
+        return \array_filter(
             $modes,
-            fn($mode) => !in_array($mode, $toRemove, true),
+            static fn($mode) => !\in_array($mode, $toRemove, true),
         );
     }
 }

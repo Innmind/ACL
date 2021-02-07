@@ -55,7 +55,7 @@ class ModeTest extends TestCase
         $this
             ->forAll(
                 Set\Strings::any()->filter(static function($string): bool {
-                    return !in_array($string, ['r', 'w', 'x', '-'], true);
+                    return !\in_array($string, ['r', 'w', 'x', '-'], true);
                 })
             )
             ->then(function($string) {

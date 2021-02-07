@@ -490,8 +490,7 @@ class ACLTest extends TestCase
         Entries $otherEntries,
         string $user,
         string $group
-    ): string
-    {
+    ): string {
         return \sprintf(
             '%s%s%s %s:%s',
             $userEntries->toString(),
@@ -504,9 +503,9 @@ class ACLTest extends TestCase
 
     private function diff(array $entries, array $toRemove): array
     {
-        return array_filter(
+        return \array_filter(
             $entries,
-            fn($entry) => !in_array($entry, $toRemove, true),
+            static fn($entry) => !\in_array($entry, $toRemove, true),
         );
     }
 }

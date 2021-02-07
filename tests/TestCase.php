@@ -16,17 +16,17 @@ class TestCase extends BaseTestCase
 
     protected function user(): Set
     {
-        return Set\Strings::any()->filter(function($user) {
-            return (bool) preg_match('~^\S+$~', $user) &&
-                strpos($user, ':') === false;
+        return Set\Strings::any()->filter(static function($user) {
+            return (bool) \preg_match('~^\S+$~', $user) &&
+                \strpos($user, ':') === false;
         });
     }
 
     protected function group(): Set
     {
-        return Set\Strings::any()->filter(function($group) {
-            return (bool) preg_match('~^\S+$~', $group) &&
-                strpos($group, ':') === false;
+        return Set\Strings::any()->filter(static function($group) {
+            return (bool) \preg_match('~^\S+$~', $group) &&
+                \strpos($group, ':') === false;
         });
     }
 
