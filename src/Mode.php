@@ -11,6 +11,7 @@ final class Mode
     private static ?self $read = null;
     private static ?self $write = null;
     private static ?self $execute = null;
+    /** @var ?Sequence<self> */
     private static ?Sequence $all = null;
 
     private $value;
@@ -54,6 +55,9 @@ final class Mode
         return self::$execute ?? self::$execute = new self('x');
     }
 
+    /**
+     * @return Sequence<self>
+     */
     public static function all(): Sequence
     {
         return self::$all ?? self::$all = Sequence::of(
