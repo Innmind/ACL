@@ -7,20 +7,14 @@ use Innmind\ACL\{
     Group,
     Exception\DomainException,
 };
-use PHPUnit\Framework\TestCase;
-use Eris\{
-    Generator,
-    TestTrait,
-};
+use Innmind\BlackBox\Set;
 
 class GroupTest extends TestCase
 {
-    use TestTrait;
-
     public function testThrowContainsAWhitespaceOrIsEmpty()
     {
         $this
-            ->forAll(Generator\elements('', ' ', 'f o'))
+            ->forAll(Set\Elements::of('', ' ', 'f o'))
             ->then(function($invalid) {
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
@@ -40,10 +34,7 @@ class GroupTest extends TestCase
     public function testAcceptsAnyStringWithoutAWhitespace()
     {
         $this
-            ->forAll(Generator\string())
-            ->when(static function($string): bool {
-                return (bool) preg_match('~^\S+$~', $string) && strpos($string, ':') === false;
-            })
+            ->forAll($this->group())
             ->then(function($string) {
                 $this->assertSame($string, (new Group($string))->toString());
             });
@@ -52,17 +43,12 @@ class GroupTest extends TestCase
     public function testEquals()
     {
         $this
-            ->minimumEvaluationRatio(0.3)
             ->forAll(
-                Generator\string(),
-                Generator\string()
+                $this->group(),
+                $this->group(),
             )
-            ->when(static function($string, $other): bool {
-                return (bool) preg_match('~^\S+$~', $string) &&
-                    (bool) preg_match('~^\S+$~', $other) &&
-                    strpos($string, ':') === false &&
-                    strpos($other, ':') === false &&
-                    $string !== $other;
+            ->filter(static function($string, $other): bool {
+                return $string !== $other;
             })
             ->then(function($string, $other) {
                 $this->assertTrue((new Group($string))->equals(new Group($string)));
