@@ -8,55 +8,53 @@ use Innmind\Immutable\{
     Sequence,
     Str,
 };
-use function Innmind\Immutable\unwrap;
 
 final class Entries
 {
     /** @var Set<Mode> */
     private Set $entries;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(Mode ...$modes)
     {
-        /** @var Set<Mode> */
-        $this->entries = Set::of(Mode::class, ...$modes);
+        $this->entries = Set::of(...$modes);
     }
 
     public static function of(string $modes): self
     {
-        /** @var Sequence<Mode> */
+        /** @var list<Mode> */
         $modes = Str::of($modes)
             ->split()
-            ->reduce(
-                Sequence::of('?'.Mode::class),
-                static function(Sequence $modes, Str $mode): Sequence {
-                    return $modes->add(Mode::of($mode->toString()));
-                }
-            )
-            ->filter(static function(?Mode $mode): bool {
-                return $mode instanceof Mode;
-            });
+            ->map(static fn($mode) => Mode::of($mode->toString()))
+            ->filter(static fn(?Mode $mode) => $mode instanceof Mode)
+            ->toList();
 
-        return new self(...unwrap($modes));
+        return new self(...$modes);
     }
 
     public function add(Mode ...$modes): self
     {
-        return new self(...unwrap($this->entries), ...$modes);
+        return new self(...$this->entries->toList(), ...$modes);
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function remove(Mode ...$modes): self
     {
-        $toRemove = Set::of(Mode::class, ...$modes);
+        $toRemove = Set::of(...$modes);
         $entries = $this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
             return !$toRemove->contains($entry);
         });
 
-        return new self(...unwrap($entries));
+        return new self(...$entries->toList());
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool
     {
-        return Set::of(Mode::class, $mode, ...$modes)->reduce(
+        return Set::of($mode, ...$modes)->reduce(
             true,
             function(bool $allows, Mode $mode): bool {
                 return $allows && $this->entries->contains($mode);

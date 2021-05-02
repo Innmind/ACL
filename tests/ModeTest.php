@@ -8,7 +8,6 @@ use Innmind\ACL\{
     Exception\DomainException,
 };
 use Innmind\Immutable\Sequence;
-use function Innmind\Immutable\unwrap;
 use Innmind\BlackBox\Set;
 
 class ModeTest extends TestCase
@@ -40,9 +39,8 @@ class ModeTest extends TestCase
     public function testAll()
     {
         $this->assertInstanceOf(Sequence::class, Mode::all());
-        $this->assertSame(Mode::class, Mode::all()->type());
         $this->assertSame(Mode::all(), Mode::all());
-        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], unwrap(Mode::all()));
+        $this->assertSame([Mode::read(), Mode::write(), Mode::execute()], Mode::all()->toList());
     }
 
     public function testOfNull()

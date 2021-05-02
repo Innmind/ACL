@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Innmind\ACL;
 
 use Innmind\Immutable\Str;
-use function Innmind\Immutable\unwrap;
 
 final class ACL
 {
@@ -31,8 +30,8 @@ final class ACL
     public static function of(string $string): self
     {
         $string = Str::of($string);
-        [$userEntries, $groupEntries, $otherEntries] = unwrap($string->take(9)->chunk(3));
-        [$user, $group] = unwrap($string->drop(10)->split(':'));
+        [$userEntries, $groupEntries, $otherEntries] = $string->take(9)->chunk(3)->toList();
+        [$user, $group] = $string->drop(10)->split(':')->toList();
 
         return new self(
             new User($user->toString()),
@@ -76,6 +75,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeUser(Mode ...$modes): self
     {
         return new self(
@@ -87,6 +89,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeGroup(Mode ...$modes): self
     {
         return new self(
@@ -98,6 +103,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeOther(Mode ...$modes): self
     {
         return new self(

@@ -61,7 +61,6 @@ final class Mode
     public static function all(): Sequence
     {
         return self::$all ?? self::$all = Sequence::of(
-            self::class,
             self::read(),
             self::write(),
             self::execute(),
