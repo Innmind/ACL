@@ -19,7 +19,7 @@ class EntriesTest extends TestCase
 
         $this->assertSame(
             $expected,
-            (new Entries(...$modes))->toString()
+            (new Entries(...$modes))->toString(),
         );
     }
 
@@ -30,7 +30,7 @@ class EntriesTest extends TestCase
     {
         $this->assertSame(
             $expected,
-            (new Entries(...$modes, ...$modes))->toString()
+            (new Entries(...$modes, ...$modes))->toString(),
         );
     }
 
@@ -95,7 +95,7 @@ class EntriesTest extends TestCase
         $this
             ->forAll(
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($initial, $toAdd) {
                 $entries = new Entries(...$initial);
@@ -105,11 +105,11 @@ class EntriesTest extends TestCase
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
                     (new Entries(...$initial))->toString(),
-                    $entries->toString()
+                    $entries->toString(),
                 );
                 $this->assertSame(
                     (new Entries(...$initial, ...$toAdd))->toString(),
-                    $entries2->toString()
+                    $entries2->toString(),
                 );
             });
     }
@@ -119,7 +119,7 @@ class EntriesTest extends TestCase
         $this
             ->forAll(
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($initial, $toRemove) {
                 $entries = new Entries(...$initial);
@@ -129,11 +129,11 @@ class EntriesTest extends TestCase
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
                     (new Entries(...$initial))->toString(),
-                    $entries->toString()
+                    $entries->toString(),
                 );
                 $this->assertSame(
                     (new Entries(...$this->diff($initial, $toRemove)))->toString(),
-                    $entries2->toString()
+                    $entries2->toString(),
                 );
             });
     }

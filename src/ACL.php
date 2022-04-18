@@ -18,7 +18,7 @@ final class ACL
         Group $group,
         Entries $userEntries,
         Entries $groupEntries,
-        Entries $otherEntries
+        Entries $otherEntries,
     ) {
         $this->user = $user;
         $this->group = $group;

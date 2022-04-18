@@ -21,7 +21,7 @@ class ACLTest extends TestCase
                 $this->group(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries) {
                 $userEntries = new Entries(...$userEntries);
@@ -33,12 +33,12 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
             });
     }
@@ -51,7 +51,7 @@ class ACLTest extends TestCase
                 $this->group(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries) {
                 $userEntries = new Entries(...$userEntries);
@@ -63,7 +63,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = ACL::of($acl->toString());
@@ -71,7 +71,7 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $acl->toString(),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -86,13 +86,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries,
-                    new Entries($mode)
+                    new Entries($mode),
                 );
 
                 $this->assertTrue($acl->allows(
                     new User('baz'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -107,13 +107,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries,
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
                     new User('baz'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -128,13 +128,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries($mode),
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
                     new User('baz'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -149,13 +149,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries,
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
                     new User('baz'),
                     new Group('bar'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -170,13 +170,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries($mode),
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertTrue($acl->allows(
                     new User('baz'),
                     new Group('bar'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -191,13 +191,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries($mode),
                     new Entries,
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
                     new User('baz'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -212,13 +212,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries,
                     new Entries,
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
                     new User('foo'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -233,13 +233,13 @@ class ACLTest extends TestCase
                     new Group('bar'),
                     new Entries($mode),
                     new Entries,
-                    new Entries
+                    new Entries,
                 );
 
                 $this->assertTrue($acl->allows(
                     new User('foo'),
                     new Group('baz'),
-                    $mode
+                    $mode,
                 ));
             });
     }
@@ -253,7 +253,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
                 $expectedUser = new Entries(...$userEntries, ...$toAdd);
@@ -266,7 +266,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->addUser(...$toAdd);
@@ -275,11 +275,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($expectedUser, $groupEntries, $otherEntries, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -293,7 +293,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
                 $expectedGroup = new Entries(...$groupEntries, ...$toAdd);
@@ -306,7 +306,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->addGroup(...$toAdd);
@@ -315,11 +315,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($userEntries, $expectedGroup, $otherEntries, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -333,7 +333,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
                 $expectedOther = new Entries(...$otherEntries, ...$toAdd);
@@ -346,7 +346,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->addOther(...$toAdd);
@@ -355,11 +355,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $expectedOther, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -373,7 +373,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
                 $expectedUser = new Entries(...$this->diff($userEntries, $toRemove));
@@ -386,7 +386,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->removeUser(...$toRemove);
@@ -395,11 +395,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($expectedUser, $groupEntries, $otherEntries, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -413,7 +413,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
                 $expectedGroup = new Entries(...$this->diff($groupEntries, $toRemove));
@@ -426,7 +426,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->removeGroup(...$toRemove);
@@ -435,11 +435,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($userEntries, $expectedGroup, $otherEntries, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -453,7 +453,7 @@ class ACLTest extends TestCase
                 $this->modes(),
                 $this->modes(),
                 $this->modes(),
-                $this->modes()
+                $this->modes(),
             )
             ->then(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
                 $expectedOther = new Entries(...$this->diff($otherEntries, $toRemove));
@@ -466,7 +466,7 @@ class ACLTest extends TestCase
                     new Group($group),
                     $userEntries,
                     $groupEntries,
-                    $otherEntries
+                    $otherEntries,
                 );
 
                 $acl2 = $acl->removeOther(...$toRemove);
@@ -475,11 +475,11 @@ class ACLTest extends TestCase
                 $this->assertNotSame($acl, $acl2);
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $otherEntries, $user, $group),
-                    $acl->toString()
+                    $acl->toString(),
                 );
                 $this->assertSame(
                     $this->format($userEntries, $groupEntries, $expectedOther, $user, $group),
-                    $acl2->toString()
+                    $acl2->toString(),
                 );
             });
     }
@@ -489,7 +489,7 @@ class ACLTest extends TestCase
         Entries $groupEntries,
         Entries $otherEntries,
         string $user,
-        string $group
+        string $group,
     ): string {
         return \sprintf(
             '%s%s%s %s:%s',
