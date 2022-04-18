@@ -34,6 +34,7 @@ enum Mode
      */
     public static function all(): Sequence
     {
+        /** @var Sequence<self> */
         return Sequence::of(
             self::read,
             self::write,
