@@ -45,9 +45,7 @@ final class Entries
     public function remove(Mode ...$modes): self
     {
         $toRemove = Set::of(...$modes);
-        $entries = $this->entries->filter(static function(Mode $entry) use ($toRemove): bool {
-            return !$toRemove->contains($entry);
-        });
+        $entries = $this->entries->diff($toRemove);
 
         return new self(...$entries->toList());
     }
