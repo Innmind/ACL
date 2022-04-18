@@ -9,6 +9,9 @@ use Innmind\Immutable\{
     Str,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Entries
 {
     /** @var Set<Mode> */
@@ -22,6 +25,9 @@ final class Entries
         $this->entries = Set::of(...$modes);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(string $modes): self
     {
         /** @var list<Mode> */

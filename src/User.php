@@ -6,6 +6,9 @@ namespace Innmind\ACL;
 use Innmind\ACL\Exception\DomainException;
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class User
 {
     private string $value;
@@ -21,6 +24,9 @@ final class User
         $this->value = $value->toString();
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(string $value): self
     {
         return new self($value);

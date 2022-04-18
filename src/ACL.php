@@ -5,6 +5,9 @@ namespace Innmind\ACL;
 
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class ACL
 {
     private User $user;
@@ -27,6 +30,9 @@ final class ACL
         $this->otherEntries = $otherEntries;
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(string $string): self
     {
         $string = Str::of($string);

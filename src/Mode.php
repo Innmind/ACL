@@ -14,6 +14,9 @@ enum Mode
     case write;
     case execute;
 
+    /**
+     * @psalm-pure
+     */
     public static function of(string $mode): ?self
     {
         return match ($mode) {
@@ -25,6 +28,8 @@ enum Mode
     }
 
     /**
+     * @psalm-pure
+     *
      * @return Sequence<self>
      */
     public static function all(): Sequence
