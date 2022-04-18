@@ -32,7 +32,7 @@ class TestCase extends BaseTestCase
 
     protected function mode(): Set
     {
-        return Set\Elements::of(Mode::read(), Mode::write(), Mode::execute());
+        return Set\Elements::of(Mode::read, Mode::write, Mode::execute);
     }
 
     protected function modes(): Set
