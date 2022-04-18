@@ -24,21 +24,21 @@ use Innmind\ACL\{
 
 $acl = ACL::of('r---w---x user:group');
 
-$acl->allows(new User('foo'), new Group('bar'), Mode::read()); // false
-$acl->allows(new User('foo'), new Group('bar'), Mode::write()); // false
-$acl->allows(new User('foo'), new Group('bar'), Mode::execute()); // true
-$acl->allows(new User('foo'), new Group('group'), Mode::read()); // false
-$acl->allows(new User('foo'), new Group('group'), Mode::write()); // true
-$acl->allows(new User('foo'), new Group('group'), Mode::execute()); // true
-$acl->allows(new User('user'), new Group('bar'), Mode::read()); // true
-$acl->allows(new User('user'), new Group('bar'), Mode::write()); // false
-$acl->allows(new User('user'), new Group('bar'), Mode::execute()); // true
-$acl->allows(new User('user'), new Group('group'), Mode::read()); // true
-$acl->allows(new User('user'), new Group('group'), Mode::write()); // true
-$acl->allows(new User('user'), new Group('group'), Mode::execute()); // true
+$acl->allows(User::of('foo'), Group::of('bar'), Mode::read); // false
+$acl->allows(User::of('foo'), Group::of('bar'), Mode::write); // false
+$acl->allows(User::of('foo'), Group::of('bar'), Mode::execute); // true
+$acl->allows(User::of('foo'), Group::of('group'), Mode::read); // false
+$acl->allows(User::of('foo'), Group::of('group'), Mode::write); // true
+$acl->allows(User::of('foo'), Group::of('group'), Mode::execute); // true
+$acl->allows(User::of('user'), Group::of('bar'), Mode::read); // true
+$acl->allows(User::of('user'), Group::of('bar'), Mode::write); // false
+$acl->allows(User::of('user'), Group::of('bar'), Mode::execute); // true
+$acl->allows(User::of('user'), Group::of('group'), Mode::read); // true
+$acl->allows(User::of('user'), Group::of('group'), Mode::write); // true
+$acl->allows(User::of('user'), Group::of('group'), Mode::execute); // true
 $acl->toString(); // outputs "r---w---x user:group"
 
-$otherAcl = $acl->addUser(Mode::write());
+$otherAcl = $acl->addUser(Mode::write);
 $acl->toString(); // outputs "r---w---x user:group"
 $otherAcl->toString(); // outputs "rw--w---x user:group"
 ```
