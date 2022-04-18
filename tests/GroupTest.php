@@ -19,7 +19,7 @@ class GroupTest extends TestCase
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
-                new Group($invalid);
+                Group::of($invalid);
             });
     }
 
@@ -28,7 +28,7 @@ class GroupTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('f:o');
 
-        new Group('f:o');
+        Group::of('f:o');
     }
 
     public function testAcceptsAnyStringWithoutAWhitespace()
@@ -36,7 +36,7 @@ class GroupTest extends TestCase
         $this
             ->forAll($this->group())
             ->then(function($string) {
-                $this->assertSame($string, (new Group($string))->toString());
+                $this->assertSame($string, Group::of($string)->toString());
             });
     }
 
@@ -51,8 +51,8 @@ class GroupTest extends TestCase
                 return $string !== $other;
             })
             ->then(function($string, $other) {
-                $this->assertTrue((new Group($string))->equals(new Group($string)));
-                $this->assertFalse((new Group($string))->equals(new Group($other)));
+                $this->assertTrue(Group::of($string)->equals(Group::of($string)));
+                $this->assertFalse(Group::of($string)->equals(Group::of($other)));
             });
     }
 }

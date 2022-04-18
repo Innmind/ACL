@@ -4,8 +4,10 @@ declare(strict_types = 1);
 namespace Innmind\ACL;
 
 use Innmind\Immutable\Str;
-use function Innmind\Immutable\unwrap;
 
+/**
+ * @psalm-immutable
+ */
 final class ACL
 {
     private User $user;
@@ -19,7 +21,7 @@ final class ACL
         Group $group,
         Entries $userEntries,
         Entries $groupEntries,
-        Entries $otherEntries
+        Entries $otherEntries,
     ) {
         $this->user = $user;
         $this->group = $group;
@@ -28,15 +30,18 @@ final class ACL
         $this->otherEntries = $otherEntries;
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function of(string $string): self
     {
         $string = Str::of($string);
-        [$userEntries, $groupEntries, $otherEntries] = unwrap($string->take(9)->chunk(3));
-        [$user, $group] = unwrap($string->drop(10)->split(':'));
+        [$userEntries, $groupEntries, $otherEntries] = $string->take(9)->chunk(3)->toList();
+        [$user, $group] = $string->drop(10)->split(':')->toList();
 
         return new self(
-            new User($user->toString()),
-            new Group($group->toString()),
+            User::of($user->toString()),
+            Group::of($group->toString()),
             Entries::of($userEntries->toString()),
             Entries::of($groupEntries->toString()),
             Entries::of($otherEntries->toString()),
@@ -76,6 +81,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeUser(Mode ...$modes): self
     {
         return new self(
@@ -87,6 +95,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeGroup(Mode ...$modes): self
     {
         return new self(
@@ -98,6 +109,9 @@ final class ACL
         );
     }
 
+    /**
+     * @no-named-arguments
+     */
     public function removeOther(Mode ...$modes): self
     {
         return new self(
