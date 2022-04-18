@@ -54,18 +54,18 @@ class EntriesTest extends TestCase
 
     public function testDoNotAllowIfModeIsMissing()
     {
-        $entries = new Entries(Mode::read());
+        $entries = new Entries(Mode::read);
 
-        $this->assertFalse($entries->allows(Mode::write()));
-        $this->assertFalse($entries->allows(Mode::execute()));
+        $this->assertFalse($entries->allows(Mode::write));
+        $this->assertFalse($entries->allows(Mode::execute));
     }
 
     public function testDoNotAllowIfOneModeIsMissing()
     {
-        $entries = new Entries(Mode::read());
+        $entries = new Entries(Mode::read);
 
-        $this->assertFalse($entries->allows(Mode::read(), Mode::write()));
-        $this->assertFalse($entries->allows(Mode::read(), Mode::execute()));
+        $this->assertFalse($entries->allows(Mode::read, Mode::write));
+        $this->assertFalse($entries->allows(Mode::read, Mode::execute));
     }
 
     public function testAllowAsLongAsTheTestedModeIsInEntries()
@@ -73,7 +73,7 @@ class EntriesTest extends TestCase
         $this
             ->forAll($this->mode())
             ->then(function($mode) {
-                $entries = new Entries(Mode::read(), Mode::write(), Mode::execute());
+                $entries = new Entries(Mode::read, Mode::write, Mode::execute);
 
                 $this->assertTrue($entries->allows($mode));
             });
@@ -142,15 +142,15 @@ class EntriesTest extends TestCase
     {
         return [
             [
-                [Mode::read(), Mode::write(), Mode::execute()],
+                [Mode::read, Mode::write, Mode::execute],
                 'rwx',
             ],
             [
-                [Mode::write(), Mode::execute()],
+                [Mode::write, Mode::execute],
                 '-wx',
             ],
             [
-                [Mode::execute()],
+                [Mode::execute],
                 '--x',
             ],
             [
@@ -158,19 +158,19 @@ class EntriesTest extends TestCase
                 '---',
             ],
             [
-                [Mode::read(), Mode::execute()],
+                [Mode::read, Mode::execute],
                 'r-x',
             ],
             [
-                [Mode::read(), Mode::write()],
+                [Mode::read, Mode::write],
                 'rw-',
             ],
             [
-                [Mode::read()],
+                [Mode::read],
                 'r--',
             ],
             [
-                [Mode::write()],
+                [Mode::write],
                 '-w-',
             ],
         ];
