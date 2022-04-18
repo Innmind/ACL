@@ -29,8 +29,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -59,8 +59,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -82,16 +82,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries,
                     new Entries($mode),
                 );
 
                 $this->assertTrue($acl->allows(
-                    new User('baz'),
-                    new Group('baz'),
+                    User::of('baz'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -103,16 +103,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries,
                     new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
-                    new User('baz'),
-                    new Group('baz'),
+                    User::of('baz'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -124,16 +124,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries($mode),
                     new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
-                    new User('baz'),
-                    new Group('baz'),
+                    User::of('baz'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -145,16 +145,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries,
                     new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
-                    new User('baz'),
-                    new Group('bar'),
+                    User::of('baz'),
+                    Group::of('bar'),
                     $mode,
                 ));
             });
@@ -166,16 +166,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries($mode),
                     new Entries,
                 );
 
                 $this->assertTrue($acl->allows(
-                    new User('baz'),
-                    new Group('bar'),
+                    User::of('baz'),
+                    Group::of('bar'),
                     $mode,
                 ));
             });
@@ -187,16 +187,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries($mode),
                     new Entries,
                     new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
-                    new User('baz'),
-                    new Group('baz'),
+                    User::of('baz'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -208,16 +208,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries,
                     new Entries,
                     new Entries,
                 );
 
                 $this->assertFalse($acl->allows(
-                    new User('foo'),
-                    new Group('baz'),
+                    User::of('foo'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -229,16 +229,16 @@ class ACLTest extends TestCase
             ->forAll($this->mode())
             ->then(function($mode) {
                 $acl = new ACL(
-                    new User('foo'),
-                    new Group('bar'),
+                    User::of('foo'),
+                    Group::of('bar'),
                     new Entries($mode),
                     new Entries,
                     new Entries,
                 );
 
                 $this->assertTrue($acl->allows(
-                    new User('foo'),
-                    new Group('baz'),
+                    User::of('foo'),
+                    Group::of('baz'),
                     $mode,
                 ));
             });
@@ -262,8 +262,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -302,8 +302,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -342,8 +342,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -382,8 +382,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -422,8 +422,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,
@@ -462,8 +462,8 @@ class ACLTest extends TestCase
                 $otherEntries = new Entries(...$otherEntries);
 
                 $acl = new ACL(
-                    new User($user),
-                    new Group($group),
+                    User::of($user),
+                    Group::of($group),
                     $userEntries,
                     $groupEntries,
                     $otherEntries,

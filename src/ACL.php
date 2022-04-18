@@ -34,8 +34,8 @@ final class ACL
         [$user, $group] = $string->drop(10)->split(':')->toList();
 
         return new self(
-            new User($user->toString()),
-            new Group($group->toString()),
+            User::of($user->toString()),
+            Group::of($group->toString()),
             Entries::of($userEntries->toString()),
             Entries::of($groupEntries->toString()),
             Entries::of($otherEntries->toString()),

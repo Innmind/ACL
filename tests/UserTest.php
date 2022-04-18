@@ -19,7 +19,7 @@ class UserTest extends TestCase
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
-                new User($invalid);
+                User::of($invalid);
             });
     }
 
@@ -28,7 +28,7 @@ class UserTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('f:o');
 
-        new User('f:o');
+        User::of('f:o');
     }
 
     public function testAcceptsAnyStringWithoutAWhitespace()
@@ -36,7 +36,7 @@ class UserTest extends TestCase
         $this
             ->forAll($this->user())
             ->then(function($string) {
-                $this->assertSame($string, (new User($string))->toString());
+                $this->assertSame($string, User::of($string)->toString());
             });
     }
 
@@ -51,8 +51,8 @@ class UserTest extends TestCase
                 return $string !== $other;
             })
             ->then(function($string, $other) {
-                $this->assertTrue((new User($string))->equals(new User($string)));
-                $this->assertFalse((new User($string))->equals(new User($other)));
+                $this->assertTrue(User::of($string)->equals(User::of($string)));
+                $this->assertFalse(User::of($string)->equals(User::of($other)));
             });
     }
 }

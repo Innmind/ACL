@@ -10,7 +10,7 @@ final class User
 {
     private string $value;
 
-    public function __construct(string $value)
+    private function __construct(string $value)
     {
         $value = Str::of($value);
 
@@ -19,6 +19,11 @@ final class User
         }
 
         $this->value = $value->toString();
+    }
+
+    public static function of(string $value): self
+    {
+        return new self($value);
     }
 
     public function equals(self $user): bool
