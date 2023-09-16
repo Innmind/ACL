@@ -36,7 +36,9 @@ final class ACL
     public static function of(string $string): self
     {
         $string = Str::of($string);
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         [$userEntries, $groupEntries, $otherEntries] = $string->take(9)->chunk(3)->toList();
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         [$user, $group] = $string->drop(10)->split(':')->toList();
 
         return new self(
