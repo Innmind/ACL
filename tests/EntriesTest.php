@@ -138,7 +138,7 @@ class EntriesTest extends TestCase
             });
     }
 
-    public function modesProvider(): array
+    public static function modesProvider(): array
     {
         return [
             [
