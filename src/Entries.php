@@ -5,7 +5,6 @@ namespace Innmind\ACL;
 
 use Innmind\Immutable\{
     Set,
-    Sequence,
     Str,
 };
 

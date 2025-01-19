@@ -6,7 +6,6 @@ namespace Tests\Innmind\ACL;
 use Innmind\ACL\{
     ACL,
     Entries,
-    Mode,
     User,
     Group,
 };
