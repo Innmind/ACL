@@ -30,8 +30,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~10.2",
-        "vimeo/psalm": "~5.12",
-        "nikic/php-parser": "^4.13.2",
+        "vimeo/psalm": "~5.12|dev-master",
         "innmind/black-box": "~5.5",
         "innmind/coding-standard": "~2.0"
     }

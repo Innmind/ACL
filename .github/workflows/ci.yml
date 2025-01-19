@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        php-version: ['8.2', '8.3']
+        php-version: ['8.2', '8.3', '8.4']
         dependencies: ['lowest', 'highest']
     name: 'PHPUnit'
     steps:
@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        php-version: ['8.2', '8.3']
+        php-version: ['8.2', '8.3', '8.4']
         dependencies: ['lowest', 'highest']
     name: 'Coverage'
     steps:
@@ -60,8 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.2', '8.3']
-        dependencies: ['lowest', 'highest']
+        php-version: ['8.2', '8.3', '8.4']
     name: 'Psalm'
     steps:
       - name: Checkout
@@ -73,8 +72,6 @@ jobs:
           extensions: mbstring, intl
       - name: Composer
         uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: ${{ matrix.dependencies }}
       - name: Psalm
         run: vendor/bin/psalm --shepherd
   cs:

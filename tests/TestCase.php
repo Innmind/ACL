@@ -16,7 +16,7 @@ class TestCase extends BaseTestCase
 
     protected function user(): Set
     {
-        return Set\Strings::any()->filter(static function($user) {
+        return Set\Strings::madeOf(Set\Chars::alphanumerical())->filter(static function($user) {
             return (bool) \preg_match('~^\S+$~', $user) &&
                 \strpos($user, ':') === false;
         });
@@ -24,7 +24,7 @@ class TestCase extends BaseTestCase
 
     protected function group(): Set
     {
-        return Set\Strings::any()->filter(static function($group) {
+        return Set\Strings::madeOf(Set\Chars::alphanumerical())->filter(static function($group) {
             return (bool) \preg_match('~^\S+$~', $group) &&
                 \strpos($group, ':') === false;
         });
