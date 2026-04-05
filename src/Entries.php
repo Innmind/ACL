@@ -62,11 +62,8 @@ final class Entries
 
     public function allows(Mode $mode, Mode ...$modes): bool
     {
-        return Set::of($mode, ...$modes)->reduce(
-            true,
-            function(bool $allows, Mode $mode): bool {
-                return $allows && $this->entries->contains($mode);
-            },
+        return Set::of($mode, ...$modes)->matches(
+            fn($mode) => $this->entries->contains($mode),
         );
     }
 
