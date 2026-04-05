@@ -19,7 +19,7 @@ class EntriesTest extends TestCase
 
         $this->assertSame(
             $expected,
-            (new Entries(...$modes))->toString(),
+            Entries::from(...$modes)->toString(),
         );
     }
 
@@ -28,7 +28,7 @@ class EntriesTest extends TestCase
     {
         $this->assertSame(
             $expected,
-            (new Entries(...$modes, ...$modes))->toString(),
+            Entries::from(...$modes, ...$modes)->toString(),
         );
     }
 
@@ -37,7 +37,7 @@ class EntriesTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $this->assertFalse((new Entries)->allows($mode));
+                $this->assertFalse(Entries::from()->allows($mode));
             });
     }
 
@@ -46,13 +46,13 @@ class EntriesTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $this->assertTrue((new Entries($mode))->allows($mode));
+                $this->assertTrue(Entries::from($mode)->allows($mode));
             });
     }
 
     public function testDoNotAllowIfModeIsMissing()
     {
-        $entries = new Entries(Mode::read);
+        $entries = Entries::from(Mode::read);
 
         $this->assertFalse($entries->allows(Mode::write));
         $this->assertFalse($entries->allows(Mode::execute));
@@ -60,7 +60,7 @@ class EntriesTest extends TestCase
 
     public function testDoNotAllowIfOneModeIsMissing()
     {
-        $entries = new Entries(Mode::read);
+        $entries = Entries::from(Mode::read);
 
         $this->assertFalse($entries->allows(Mode::read, Mode::write));
         $this->assertFalse($entries->allows(Mode::read, Mode::execute));
@@ -71,7 +71,7 @@ class EntriesTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $entries = new Entries(Mode::read, Mode::write, Mode::execute);
+                $entries = Entries::from(Mode::read, Mode::write, Mode::execute);
 
                 $this->assertTrue($entries->allows($mode));
             });
@@ -94,17 +94,17 @@ class EntriesTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($initial, $toAdd) {
-                $entries = new Entries(...$initial);
+                $entries = Entries::from(...$initial);
                 $entries2 = $entries->add(...$toAdd);
 
                 $this->assertInstanceOf(Entries::class, $entries2);
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
-                    (new Entries(...$initial))->toString(),
+                    Entries::from(...$initial)->toString(),
                     $entries->toString(),
                 );
                 $this->assertSame(
-                    (new Entries(...$initial, ...$toAdd))->toString(),
+                    Entries::from(...$initial, ...$toAdd)->toString(),
                     $entries2->toString(),
                 );
             });
@@ -118,17 +118,17 @@ class EntriesTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($initial, $toRemove) {
-                $entries = new Entries(...$initial);
+                $entries = Entries::from(...$initial);
                 $entries2 = $entries->remove(...$toRemove);
 
                 $this->assertInstanceOf(Entries::class, $entries2);
                 $this->assertNotSame($entries, $entries2);
                 $this->assertSame(
-                    (new Entries(...$initial))->toString(),
+                    Entries::from(...$initial)->toString(),
                     $entries->toString(),
                 );
                 $this->assertSame(
-                    (new Entries(...$this->diff($initial, $toRemove)))->toString(),
+                    Entries::from(...$this->diff($initial, $toRemove))->toString(),
                     $entries2->toString(),
                 );
             });

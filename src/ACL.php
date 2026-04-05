@@ -10,13 +10,32 @@ use Innmind\Immutable\Str;
  */
 final class ACL
 {
-    public function __construct(
+    private function __construct(
         private User $user,
         private Group $group,
         private Entries $userEntries,
         private Entries $groupEntries,
         private Entries $otherEntries,
     ) {
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function from(
+        User $user,
+        Group $group,
+        Entries $userEntries,
+        Entries $groupEntries,
+        Entries $otherEntries,
+    ): self {
+        return new self(
+            $user,
+            $group,
+            $userEntries,
+            $groupEntries,
+            $otherEntries,
+        );
     }
 
     /**

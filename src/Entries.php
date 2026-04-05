@@ -6,6 +6,7 @@ namespace Innmind\ACL;
 use Innmind\Immutable\{
     Set,
     Str,
+    Predicate\Instance,
 };
 
 /**
@@ -13,15 +14,21 @@ use Innmind\Immutable\{
  */
 final class Entries
 {
-    /** @var Set<Mode> */
-    private Set $entries;
+    /**
+     * @param Set<Mode> $entries
+     */
+    private function __construct(
+        private Set $entries,
+    ) {
+    }
 
     /**
      * @no-named-arguments
+     * @psalm-pure
      */
-    public function __construct(Mode ...$modes)
+    public static function from(Mode ...$modes): self
     {
-        $this->entries = Set::of(...$modes);
+        return new self(Set::of(...$modes));
     }
 
     /**
@@ -29,19 +36,18 @@ final class Entries
      */
     public static function of(string $modes): self
     {
-        /** @var list<Mode> */
-        $modes = Str::of($modes)
-            ->split()
-            ->map(static fn($mode) => Mode::of($mode->toString()))
-            ->filter(static fn(?Mode $mode) => $mode instanceof Mode)
-            ->toList();
-
-        return new self(...$modes);
+        return new self(
+            Str::of($modes)
+                ->split()
+                ->map(static fn($mode) => Mode::of($mode->toString()))
+                ->keep(Instance::of(Mode::class))
+                ->toSet(),
+        );
     }
 
     public function add(Mode ...$modes): self
     {
-        return new self(...$this->entries->toList(), ...$modes);
+        return self::from(...$this->entries->toList(), ...$modes);
     }
 
     /**
@@ -50,9 +56,8 @@ final class Entries
     public function remove(Mode ...$modes): self
     {
         $toRemove = Set::of(...$modes);
-        $entries = $this->entries->diff($toRemove);
 
-        return new self(...$entries->toList());
+        return new self($this->entries->diff($toRemove));
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool

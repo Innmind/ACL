@@ -24,11 +24,11 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries) {
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -54,11 +54,11 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries) {
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -81,12 +81,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries,
-                    new Entries($mode),
+                    Entries::from(),
+                    Entries::from(),
+                    Entries::from($mode),
                 );
 
                 $this->assertTrue($acl->allows(
@@ -102,12 +102,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries,
-                    new Entries,
+                    Entries::from(),
+                    Entries::from(),
+                    Entries::from(),
                 );
 
                 $this->assertFalse($acl->allows(
@@ -123,12 +123,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries($mode),
-                    new Entries,
+                    Entries::from(),
+                    Entries::from($mode),
+                    Entries::from(),
                 );
 
                 $this->assertFalse($acl->allows(
@@ -144,12 +144,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries,
-                    new Entries,
+                    Entries::from(),
+                    Entries::from(),
+                    Entries::from(),
                 );
 
                 $this->assertFalse($acl->allows(
@@ -165,12 +165,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries($mode),
-                    new Entries,
+                    Entries::from(),
+                    Entries::from($mode),
+                    Entries::from(),
                 );
 
                 $this->assertTrue($acl->allows(
@@ -186,12 +186,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries($mode),
-                    new Entries,
-                    new Entries,
+                    Entries::from($mode),
+                    Entries::from(),
+                    Entries::from(),
                 );
 
                 $this->assertFalse($acl->allows(
@@ -207,12 +207,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries,
-                    new Entries,
-                    new Entries,
+                    Entries::from(),
+                    Entries::from(),
+                    Entries::from(),
                 );
 
                 $this->assertFalse($acl->allows(
@@ -228,12 +228,12 @@ class ACLTest extends TestCase
         return $this
             ->forAll($this->mode())
             ->prove(function($mode) {
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of('foo'),
                     Group::of('bar'),
-                    new Entries($mode),
-                    new Entries,
-                    new Entries,
+                    Entries::from($mode),
+                    Entries::from(),
+                    Entries::from(),
                 );
 
                 $this->assertTrue($acl->allows(
@@ -256,12 +256,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
-                $expectedUser = new Entries(...$userEntries, ...$toAdd);
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedUser = Entries::from(...$userEntries, ...$toAdd);
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -296,12 +296,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
-                $expectedGroup = new Entries(...$groupEntries, ...$toAdd);
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedGroup = Entries::from(...$groupEntries, ...$toAdd);
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -336,12 +336,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toAdd) {
-                $expectedOther = new Entries(...$otherEntries, ...$toAdd);
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedOther = Entries::from(...$otherEntries, ...$toAdd);
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -376,12 +376,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedUser = new Entries(...$this->diff($userEntries, $toRemove));
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedUser = Entries::from(...$this->diff($userEntries, $toRemove));
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -416,12 +416,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedGroup = new Entries(...$this->diff($groupEntries, $toRemove));
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedGroup = Entries::from(...$this->diff($groupEntries, $toRemove));
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
@@ -456,12 +456,12 @@ class ACLTest extends TestCase
                 $this->modes(),
             )
             ->prove(function($user, $group, $userEntries, $groupEntries, $otherEntries, $toRemove) {
-                $expectedOther = new Entries(...$this->diff($otherEntries, $toRemove));
-                $userEntries = new Entries(...$userEntries);
-                $groupEntries = new Entries(...$groupEntries);
-                $otherEntries = new Entries(...$otherEntries);
+                $expectedOther = Entries::from(...$this->diff($otherEntries, $toRemove));
+                $userEntries = Entries::from(...$userEntries);
+                $groupEntries = Entries::from(...$groupEntries);
+                $otherEntries = Entries::from(...$otherEntries);
 
-                $acl = new ACL(
+                $acl = ACL::from(
                     User::of($user),
                     Group::of($group),
                     $userEntries,
