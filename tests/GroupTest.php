@@ -22,7 +22,7 @@ class GroupTest extends TestCase
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
-                Group::of($invalid);
+                $_ = Group::of($invalid);
             });
     }
 
@@ -31,7 +31,7 @@ class GroupTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('f:o');
 
-        Group::of('f:o');
+        $_ = Group::of('f:o');
     }
 
     public function testAcceptsAnyStringWithoutAWhitespace(): Proof

@@ -22,6 +22,7 @@ final class ACL
     /**
      * @psalm-pure
      */
+    #[\NoDiscard]
     public static function from(
         User $user,
         Group $group,
@@ -41,6 +42,7 @@ final class ACL
     /**
      * @psalm-pure
      */
+    #[\NoDiscard]
     public static function of(string $string): self
     {
         $string = Str::of($string);
@@ -58,6 +60,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addUser(Mode ...$modes): self
     {
         return new self(
@@ -69,6 +72,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addGroup(Mode ...$modes): self
     {
         return new self(
@@ -80,6 +84,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addOther(Mode ...$modes): self
     {
         return new self(
@@ -94,6 +99,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeUser(Mode ...$modes): self
     {
         return new self(
@@ -108,6 +114,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeGroup(Mode ...$modes): self
     {
         return new self(
@@ -122,6 +129,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeOther(Mode ...$modes): self
     {
         return new self(
@@ -133,6 +141,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function allows(User $user, Group $group, Mode $mode, Mode ...$modes): bool
     {
         if ($this->otherEntries->allows($mode, ...$modes)) {
@@ -150,6 +159,7 @@ final class ACL
         return false;
     }
 
+    #[\NoDiscard]
     public function toString(): string
     {
         return \sprintf(
