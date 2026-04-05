@@ -59,7 +59,7 @@ class ModeTest extends TestCase
             ->prove(function($string) {
                 $this->expectException(\UnhandledMatchError::class);
 
-                Mode::of($string);
+                $_ = Mode::of($string);
             });
     }
 }

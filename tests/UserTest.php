@@ -22,7 +22,7 @@ class UserTest extends TestCase
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
-                User::of($invalid);
+                $_ = User::of($invalid);
             });
     }
 
@@ -31,7 +31,7 @@ class UserTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('f:o');
 
-        User::of('f:o');
+        $_ = User::of('f:o');
     }
 
     public function testAcceptsAnyStringWithoutAWhitespace(): Proof
