@@ -6,6 +6,8 @@ namespace Innmind\ACL;
 use Innmind\Immutable\{
     Set,
     Str,
+    Predicate\Instance,
+    Monoid\Concat,
 };
 
 /**
@@ -13,15 +15,21 @@ use Innmind\Immutable\{
  */
 final class Entries
 {
-    /** @var Set<Mode> */
-    private Set $entries;
+    /**
+     * @param Set<Mode> $entries
+     */
+    private function __construct(
+        private Set $entries,
+    ) {
+    }
 
     /**
      * @no-named-arguments
+     * @psalm-pure
      */
-    public function __construct(Mode ...$modes)
+    public static function from(Mode ...$modes): self
     {
-        $this->entries = Set::of(...$modes);
+        return new self(Set::of(...$modes));
     }
 
     /**
@@ -29,19 +37,18 @@ final class Entries
      */
     public static function of(string $modes): self
     {
-        /** @var list<Mode> */
-        $modes = Str::of($modes)
-            ->split()
-            ->map(static fn($mode) => Mode::of($mode->toString()))
-            ->filter(static fn(?Mode $mode) => $mode instanceof Mode)
-            ->toList();
-
-        return new self(...$modes);
+        return new self(
+            Str::of($modes)
+                ->split()
+                ->map(static fn($mode) => Mode::of($mode->toString()))
+                ->keep(Instance::of(Mode::class))
+                ->toSet(),
+        );
     }
 
     public function add(Mode ...$modes): self
     {
-        return new self(...$this->entries->toList(), ...$modes);
+        return self::from(...$this->entries->toList(), ...$modes);
     }
 
     /**
@@ -50,28 +57,26 @@ final class Entries
     public function remove(Mode ...$modes): self
     {
         $toRemove = Set::of(...$modes);
-        $entries = $this->entries->diff($toRemove);
 
-        return new self(...$entries->toList());
+        return new self($this->entries->diff($toRemove));
     }
 
     public function allows(Mode $mode, Mode ...$modes): bool
     {
-        return Set::of($mode, ...$modes)->reduce(
-            true,
-            function(bool $allows, Mode $mode): bool {
-                return $allows && $this->entries->contains($mode);
-            },
+        return Set::of($mode, ...$modes)->matches(
+            fn($mode) => $this->entries->contains($mode),
         );
     }
 
     public function toString(): string
     {
-        return Mode::all()->reduce(
-            '',
-            function(string $entries, Mode $mode): string {
-                return $entries.($this->entries->contains($mode) ? $mode->toString() : '-');
-            },
-        );
+        return Mode::all()
+            ->map(fn($mode) => match ($this->entries->contains($mode)) {
+                true => $mode->toString(),
+                false => '-',
+            })
+            ->map(Str::of(...))
+            ->fold(Concat::monoid)
+            ->toString();
     }
 }
