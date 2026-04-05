@@ -10,24 +10,13 @@ use Innmind\Immutable\Str;
  */
 final class ACL
 {
-    private User $user;
-    private Group $group;
-    private Entries $userEntries;
-    private Entries $groupEntries;
-    private Entries $otherEntries;
-
     public function __construct(
-        User $user,
-        Group $group,
-        Entries $userEntries,
-        Entries $groupEntries,
-        Entries $otherEntries,
+        private User $user,
+        private Group $group,
+        private Entries $userEntries,
+        private Entries $groupEntries,
+        private Entries $otherEntries,
     ) {
-        $this->user = $user;
-        $this->group = $group;
-        $this->userEntries = $userEntries;
-        $this->groupEntries = $groupEntries;
-        $this->otherEntries = $otherEntries;
     }
 
     /**
