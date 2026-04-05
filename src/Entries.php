@@ -7,6 +7,7 @@ use Innmind\Immutable\{
     Set,
     Str,
     Predicate\Instance,
+    Monoid\Concat,
 };
 
 /**
@@ -69,11 +70,13 @@ final class Entries
 
     public function toString(): string
     {
-        return Mode::all()->reduce(
-            '',
-            function(string $entries, Mode $mode): string {
-                return $entries.($this->entries->contains($mode) ? $mode->toString() : '-');
-            },
-        );
+        return Mode::all()
+            ->map(fn($mode) => match ($this->entries->contains($mode)) {
+                true => $mode->toString(),
+                false => '-',
+            })
+            ->map(Str::of(...))
+            ->fold(Concat::monoid)
+            ->toString();
     }
 }
