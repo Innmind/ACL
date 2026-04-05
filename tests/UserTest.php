@@ -7,19 +7,22 @@ use Innmind\ACL\{
     User,
     Exception\DomainException,
 };
-use Innmind\BlackBox\Set;
+use Innmind\BlackBox\{
+    PHPUnit\BlackBox\Proof,
+    Set,
+};
 
 class UserTest extends TestCase
 {
-    public function testThrowContainsAWhitespaceOrIsEmpty()
+    public function testThrowContainsAWhitespaceOrIsEmpty(): Proof
     {
-        $this
-            ->forAll(Set\Elements::of('', ' ', 'f o'))
-            ->then(function($invalid) {
+        return $this
+            ->forAll(Set::of('', ' ', 'f o'))
+            ->prove(function($invalid) {
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
-                User::of($invalid);
+                $_ = User::of($invalid);
             });
     }
 
@@ -28,21 +31,21 @@ class UserTest extends TestCase
         $this->expectException(DomainException::class);
         $this->expectExceptionMessage('f:o');
 
-        User::of('f:o');
+        $_ = User::of('f:o');
     }
 
-    public function testAcceptsAnyStringWithoutAWhitespace()
+    public function testAcceptsAnyStringWithoutAWhitespace(): Proof
     {
-        $this
+        return $this
             ->forAll($this->user())
-            ->then(function($string) {
+            ->prove(function($string) {
                 $this->assertSame($string, User::of($string)->toString());
             });
     }
 
-    public function testEquals()
+    public function testEquals(): Proof
     {
-        $this
+        return $this
             ->forAll(
                 $this->user(),
                 $this->user(),
@@ -50,7 +53,7 @@ class UserTest extends TestCase
             ->filter(static function($string, $other): bool {
                 return $string !== $other;
             })
-            ->then(function($string, $other) {
+            ->prove(function($string, $other) {
                 $this->assertTrue(User::of($string)->equals(User::of($string)));
                 $this->assertFalse(User::of($string)->equals(User::of($other)));
             });

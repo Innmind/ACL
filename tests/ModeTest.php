@@ -5,7 +5,10 @@ namespace Tests\Innmind\ACL;
 
 use Innmind\ACL\Mode;
 use Innmind\Immutable\Sequence;
-use Innmind\BlackBox\Set;
+use Innmind\BlackBox\{
+    PHPUnit\BlackBox\Proof,
+    Set,
+};
 
 class ModeTest extends TestCase
 {
@@ -45,18 +48,18 @@ class ModeTest extends TestCase
         $this->assertNull(Mode::of('-'));
     }
 
-    public function testThrowWhenBuildingModeFromUnknownString()
+    public function testThrowWhenBuildingModeFromUnknownString(): Proof
     {
-        $this
+        return $this
             ->forAll(
-                Set\Strings::any()->filter(static function($string): bool {
+                Set::strings()->filter(static function($string): bool {
                     return !\in_array($string, ['r', 'w', 'x', '-'], true);
                 }),
             )
-            ->then(function($string) {
+            ->prove(function($string) {
                 $this->expectException(\UnhandledMatchError::class);
 
-                Mode::of($string);
+                $_ = Mode::of($string);
             });
     }
 }

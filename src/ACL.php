@@ -10,29 +10,39 @@ use Innmind\Immutable\Str;
  */
 final class ACL
 {
-    private User $user;
-    private Group $group;
-    private Entries $userEntries;
-    private Entries $groupEntries;
-    private Entries $otherEntries;
-
-    public function __construct(
-        User $user,
-        Group $group,
-        Entries $userEntries,
-        Entries $groupEntries,
-        Entries $otherEntries,
+    private function __construct(
+        private User $user,
+        private Group $group,
+        private Entries $userEntries,
+        private Entries $groupEntries,
+        private Entries $otherEntries,
     ) {
-        $this->user = $user;
-        $this->group = $group;
-        $this->userEntries = $userEntries;
-        $this->groupEntries = $groupEntries;
-        $this->otherEntries = $otherEntries;
     }
 
     /**
      * @psalm-pure
      */
+    #[\NoDiscard]
+    public static function from(
+        User $user,
+        Group $group,
+        Entries $userEntries,
+        Entries $groupEntries,
+        Entries $otherEntries,
+    ): self {
+        return new self(
+            $user,
+            $group,
+            $userEntries,
+            $groupEntries,
+            $otherEntries,
+        );
+    }
+
+    /**
+     * @psalm-pure
+     */
+    #[\NoDiscard]
     public static function of(string $string): self
     {
         $string = Str::of($string);
@@ -50,6 +60,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addUser(Mode ...$modes): self
     {
         return new self(
@@ -61,6 +72,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addGroup(Mode ...$modes): self
     {
         return new self(
@@ -72,6 +84,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function addOther(Mode ...$modes): self
     {
         return new self(
@@ -86,6 +99,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeUser(Mode ...$modes): self
     {
         return new self(
@@ -100,6 +114,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeGroup(Mode ...$modes): self
     {
         return new self(
@@ -114,6 +129,7 @@ final class ACL
     /**
      * @no-named-arguments
      */
+    #[\NoDiscard]
     public function removeOther(Mode ...$modes): self
     {
         return new self(
@@ -125,6 +141,7 @@ final class ACL
         );
     }
 
+    #[\NoDiscard]
     public function allows(User $user, Group $group, Mode $mode, Mode ...$modes): bool
     {
         if ($this->otherEntries->allows($mode, ...$modes)) {
@@ -142,6 +159,7 @@ final class ACL
         return false;
     }
 
+    #[\NoDiscard]
     public function toString(): string
     {
         return \sprintf(

@@ -17,6 +17,7 @@ enum Mode
     /**
      * @psalm-pure
      */
+    #[\NoDiscard]
     public static function of(string $mode): ?self
     {
         return match ($mode) {
@@ -32,6 +33,7 @@ enum Mode
      *
      * @return Sequence<self>
      */
+    #[\NoDiscard]
     public static function all(): Sequence
     {
         /** @var Sequence<self> */
@@ -42,6 +44,7 @@ enum Mode
         );
     }
 
+    #[\NoDiscard]
     public function toString(): string
     {
         return match ($this) {

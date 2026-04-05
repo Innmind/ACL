@@ -27,16 +27,19 @@ final class User
     /**
      * @psalm-pure
      */
+    #[\NoDiscard]
     public static function of(string $value): self
     {
         return new self($value);
     }
 
+    #[\NoDiscard]
     public function equals(self $user): bool
     {
         return $this->value === $user->value;
     }
 
+    #[\NoDiscard]
     public function toString(): string
     {
         return $this->value;
