@@ -7,12 +7,12 @@ use Innmind\ACL\{
     Entries,
     Mode,
 };
+use Innmind\BlackBox\PHPUnit\BlackBox\Proof;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class EntriesTest extends TestCase
 {
-    /**
-     * @dataProvider modesProvider
-     */
+    #[DataProvider('modesProvider')]
     public function testStringCast($modes, $expected)
     {
         \shuffle($modes);
@@ -23,9 +23,7 @@ class EntriesTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider modesProvider
-     */
+    #[DataProvider('modesProvider')]
     public function testOnlyOneModePerKindIsKept($modes, $expected)
     {
         $this->assertSame(
@@ -34,20 +32,20 @@ class EntriesTest extends TestCase
         );
     }
 
-    public function testDoNotAllowByDefault()
+    public function testDoNotAllowByDefault(): Proof
     {
-        $this
+        return $this
             ->forAll($this->mode())
-            ->then(function($mode) {
+            ->prove(function($mode) {
                 $this->assertFalse((new Entries)->allows($mode));
             });
     }
 
-    public function testAllowTheSpecifiedEntry()
+    public function testAllowTheSpecifiedEntry(): Proof
     {
-        $this
+        return $this
             ->forAll($this->mode())
-            ->then(function($mode) {
+            ->prove(function($mode) {
                 $this->assertTrue((new Entries($mode))->allows($mode));
             });
     }
@@ -68,20 +66,18 @@ class EntriesTest extends TestCase
         $this->assertFalse($entries->allows(Mode::read, Mode::execute));
     }
 
-    public function testAllowAsLongAsTheTestedModeIsInEntries()
+    public function testAllowAsLongAsTheTestedModeIsInEntries(): Proof
     {
-        $this
+        return $this
             ->forAll($this->mode())
-            ->then(function($mode) {
+            ->prove(function($mode) {
                 $entries = new Entries(Mode::read, Mode::write, Mode::execute);
 
                 $this->assertTrue($entries->allows($mode));
             });
     }
 
-    /**
-     * @dataProvider modesProvider
-     */
+    #[DataProvider('modesProvider')]
     public function testOf($_, $modes)
     {
         $entries = Entries::of($modes);
@@ -90,14 +86,14 @@ class EntriesTest extends TestCase
         $this->assertSame($modes, $entries->toString());
     }
 
-    public function testAddMode()
+    public function testAddMode(): Proof
     {
-        $this
+        return $this
             ->forAll(
                 $this->modes(),
                 $this->modes(),
             )
-            ->then(function($initial, $toAdd) {
+            ->prove(function($initial, $toAdd) {
                 $entries = new Entries(...$initial);
                 $entries2 = $entries->add(...$toAdd);
 
@@ -114,14 +110,14 @@ class EntriesTest extends TestCase
             });
     }
 
-    public function testRemove()
+    public function testRemove(): Proof
     {
-        $this
+        return $this
             ->forAll(
                 $this->modes(),
                 $this->modes(),
             )
-            ->then(function($initial, $toRemove) {
+            ->prove(function($initial, $toRemove) {
                 $entries = new Entries(...$initial);
                 $entries2 = $entries->remove(...$toRemove);
 

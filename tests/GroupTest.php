@@ -7,15 +7,18 @@ use Innmind\ACL\{
     Group,
     Exception\DomainException,
 };
-use Innmind\BlackBox\Set;
+use Innmind\BlackBox\{
+    PHPUnit\BlackBox\Proof,
+    Set,
+};
 
 class GroupTest extends TestCase
 {
-    public function testThrowContainsAWhitespaceOrIsEmpty()
+    public function testThrowContainsAWhitespaceOrIsEmpty(): Proof
     {
-        $this
-            ->forAll(Set\Elements::of('', ' ', 'f o'))
-            ->then(function($invalid) {
+        return $this
+            ->forAll(Set::of('', ' ', 'f o'))
+            ->prove(function($invalid) {
                 $this->expectException(DomainException::class);
                 $this->expectExceptionMessage($invalid);
 
@@ -31,18 +34,18 @@ class GroupTest extends TestCase
         Group::of('f:o');
     }
 
-    public function testAcceptsAnyStringWithoutAWhitespace()
+    public function testAcceptsAnyStringWithoutAWhitespace(): Proof
     {
-        $this
+        return $this
             ->forAll($this->group())
-            ->then(function($string) {
+            ->prove(function($string) {
                 $this->assertSame($string, Group::of($string)->toString());
             });
     }
 
-    public function testEquals()
+    public function testEquals(): Proof
     {
-        $this
+        return $this
             ->forAll(
                 $this->group(),
                 $this->group(),
@@ -50,7 +53,7 @@ class GroupTest extends TestCase
             ->filter(static function($string, $other): bool {
                 return $string !== $other;
             })
-            ->then(function($string, $other) {
+            ->prove(function($string, $other) {
                 $this->assertTrue(Group::of($string)->equals(Group::of($string)));
                 $this->assertFalse(Group::of($string)->equals(Group::of($other)));
             });
